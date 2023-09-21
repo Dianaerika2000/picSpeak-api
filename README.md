@@ -26,7 +26,7 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Installation process
 
 ```bash
 $ npm install
@@ -43,6 +43,21 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# rename .env.example to .env
+```
+
+## Migrations
+
+```bash
+# run migrations
+$ npm run typeorm:run-migrations
+
+# generate migration
+$ npm run typeorm:generate-migration --name=first_migration
+
+# revert migration
+$ typeorm:run-revert
 ```
 
 ## Test
