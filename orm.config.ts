@@ -1,5 +1,8 @@
 import { ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
 const configService = new ConfigService();
 
