@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { IndividualUsersService } from './individual-users.service';
 import { CreateIndividualUserDto } from './dto/create-individual-user.dto';
 import { UpdateIndividualUserDto } from './dto/update-individual-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Individual Users')
 @Controller('individual-users')
 export class IndividualUsersController {
   constructor(private readonly individualUsersService: IndividualUsersService) {}

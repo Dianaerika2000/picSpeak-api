@@ -4,15 +4,33 @@ import { UpdateIndividualUserDto } from './dto/update-individual-user.dto';
 import { IndividualUser } from './entities/individual-user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class IndividualUsersService {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(IndividualUser)
     private readonly individualUserRepository: Repository<IndividualUser>,
   ){}
 
-  create(createIndividualUserDto: CreateIndividualUserDto) {
+  async create(createIndividualUserDto: CreateIndividualUserDto) {
+    const user = new User();
+    user.type = createIndividualUserDto.type;
+    user.photoUrl = createIndividualUserDto.photo_url;
+    const newUser = await this.userRepository.save(user);
+
+    const individual = new IndividualUser();
+    individual.name = createIndividualUserDto.name;
+    individual.lastname = createIndividualUserDto.lastname;
+    individual.birthDate = createIndividualUserDto.birthDate;
+    individual.gender = createIndividualUserDto.gender;
+    individual.nationality = createIndividualUserDto.nationality;
+    individual.email = createIndividualUserDto.email;
+    individual.password = createIndividualUserDto.password;
+    individual.user = newUser;
+
     return this.individualUserRepository.save(createIndividualUserDto);
   }
 

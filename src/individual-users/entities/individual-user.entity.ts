@@ -1,5 +1,5 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class IndividualUser {
@@ -35,7 +35,8 @@ export class IndividualUser {
 
     @DeleteDateColumn({ name: 'deleted_at'})
     deletedAt: Date;
-    
-    @OneToOne(() => User, user => user.individual)
+
+    @OneToOne(() => User, user => user.individual, { cascade: true })
+    @JoinColumn({ name: 'user_id'})
     user: User; 
 }

@@ -1,48 +1,78 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import * as bcryptjs from "bcryptjs";
 import { IndividualUsersService } from 'src/individual-users/individual-users.service';
-import { User } from 'src/users/entities/user.entity';
-import { IndividualUser } from 'src/individual-users/entities/individual-user.entity';
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private readonly usersService: UsersService,
-        private readonly individualUsersService: IndividualUsersService
+        private readonly individualUsersService: IndividualUsersService,
+        private readonly jwtService: JwtService
     ){}
 
-    async register(registerDto: RegisterDto) {
-        const existUser = await this.individualUsersService.findOneByEmail(registerDto.email);
+    async register({
+        name, 
+        lastname, 
+        email, 
+        password, 
+        birthDate, 
+        gender, 
+        nationality, 
+        type, 
+        photo_url}: RegisterDto) {
+        const existUser = await this.individualUsersService.findOneByEmail(email);
 
         if (existUser) {
-            throw new BadRequestException('User already exists');
+            throw new BadRequestException('Email already exists');
         }
-        
-        const user = new User();
-        user.type = registerDto.type;
-        user.photoUrl = registerDto.photo_url;
 
-        const individual = new IndividualUser();
-        individual.name = registerDto.name;
-        individual.lastname = registerDto.lastname;
-        individual.email = registerDto.email;
-        individual.password = registerDto.password;
-        individual.birthDate = registerDto.birth_date;
-        individual.gender = registerDto.gender;
-        individual.nationality = registerDto.nationality;
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-        user.individual = individual;
+        const newUser = await this.individualUsersService.create({
+            type, 
+            photo_url, 
+            name, 
+            lastname, 
+            birthDate, 
+            gender, 
+            nationality, 
+            email, 
+            password: hashedPassword
+        });
 
-        await this.individualUsersService.create(individual);
-        await this.usersService.create(user);
-
-        return 'creado?';
+        return {
+            message: "User created successfully",
+            user: newUser
+        };
     }
 
-    login() {
-        return 'login';
+    async login({ email, password}: LoginDto) {
+        const user = await this.individualUsersService.findOneByEmail(email);
+
+        if (!user) {
+            throw new UnauthorizedException("Invalid email");
+        }
+
+        const isPasswordValid = await bcryptjs.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            throw new UnauthorizedException("Invalid password");
+        }
+
+        const payload = { email: user.email };
+        const token = await this.jwtService.signAsync(payload);
+
+        return {
+            message: "Login successful",
+            token: token,
+            email: user.email
+        };
+    }
+
+    async profile({ email }: { email: string }) {
+        return await this.individualUsersService.findOneByEmail(email);
     }
 }

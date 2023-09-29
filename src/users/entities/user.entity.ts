@@ -1,3 +1,4 @@
+import { UserType } from "src/enums/user-type.enum";
 import { IndividualUser } from "src/individual-users/entities/individual-user.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
 
@@ -9,8 +10,11 @@ export class User {
     @Column({ name: 'photo_url'})
     photoUrl: string;
 
-    @Column({ nullable: false})
-    type: string;
+    @Column({
+        type: "enum",
+        enum: UserType,
+        default: UserType.IND,})
+    type: UserType;
 
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
@@ -21,7 +25,6 @@ export class User {
     @DeleteDateColumn({ name: 'deleted_at'})
     deletedAt: Date;
 
-    @OneToOne(() => IndividualUser, individual => individual.user, { cascade: true })
-    @JoinColumn({ name: 'individual_id'})
+    @OneToOne(() => IndividualUser, individual => individual.user)
     individual: IndividualUser; 
 }
