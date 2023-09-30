@@ -1,5 +1,8 @@
 import { ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // Carga las variables de entorno desde el archivo .env
 
 const configService = new ConfigService();
 
@@ -10,6 +13,6 @@ export default new DataSource({
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_DATABASE'),
-  entities: ['src/**/**/*.entity{.ts,.js}'],
+  entities: ['dist/src/**/**/*.entity{.ts,.js}'],
   migrations: ['src/database/migrations/*{.ts,.js}'],
 });

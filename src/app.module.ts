@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { IndividualUsersModule } from './individual-users/individual-users.module';
+import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 
 @Module({
@@ -12,7 +15,6 @@ import { MailModule } from './mail/mail.module';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DB_HOST'),
@@ -25,10 +27,14 @@ import { MailModule } from './mail/mail.module';
         //synchronize: true, 
         cache: false
       }),
+      inject: [ConfigService],
     }),
+    UsersModule,
+    IndividualUsersModule,
+    AuthModule,
     MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
