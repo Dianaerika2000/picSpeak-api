@@ -1,6 +1,5 @@
 import { Transform } from "class-transformer";
 import { IsDateString, IsEmail, IsEnum, IsString, MinLength } from "class-validator";
-import { UserType } from "src/enums/user-type.enum";
 
 export class RegisterDto {
     @Transform(({value}) => value.trim())
@@ -28,8 +27,8 @@ export class RegisterDto {
     @Transform(({value}) => value.trim())
     password: string;
 
-    @IsEnum(UserType)
-    type: UserType
+    @IsString()
+    type: string
 
     @IsString()
     photo_url?: string;
