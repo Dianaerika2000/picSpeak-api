@@ -10,4 +10,4 @@ import { User } from './entities/user.entity';
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService]
 })
-export class UsersModule {}
+export class UsersModule { }

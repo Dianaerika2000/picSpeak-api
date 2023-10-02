@@ -6,6 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { IndividualUsersModule } from './individual-users/individual-users.module';
 import { AuthModule } from './auth/auth.module';
+import { NacionalityModule } from './nacionality/nacionality.module';
+import { LanguageModule } from './language/language.module';
+import { InterestModule } from './interest/interest.module';
+import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
+import { ConfigurationModule } from './configuration/configuration.module';
 
 @Module({
   imports: [
@@ -22,8 +27,8 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         logging: true,
-        autoLoadEntities: true,
-        //synchronize: true, 
+        autoLoadEntities: false,//cambiar a true para sincronizar con la bd
+        synchronize: true, 
         cache: false
       }),
       inject: [ConfigService],
@@ -31,6 +36,11 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     IndividualUsersModule,
     AuthModule,
+    NacionalityModule,
+    LanguageModule,
+    InterestModule,
+    InappropriateContentModule,
+    ConfigurationModule
   ],
   controllers: [AppController],
   providers: [AppService],
