@@ -28,7 +28,7 @@ import { MailModule } from './mail/mail.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         logging: true,
-        autoLoadEntities: false,//cambiar a true para sincronizar con la bd
+        autoLoadEntities: true,//cambiar a true para sincronizar con la bd
         synchronize: true, 
         cache: false
       }),
