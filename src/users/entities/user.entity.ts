@@ -1,4 +1,3 @@
-import { UserType } from "src/enums/user-type.enum";
 import { IndividualUser } from "src/individual-users/entities/individual-user.entity";
 
 import { Nacionality } from "src/nacionality/entities/nacionality.entity";
@@ -15,12 +14,8 @@ export class User {
     @Column({ name: 'photo_url' })
     photoUrl: string;
 
-    @Column({
-        type: "enum",
-        enum: UserType,
-        default: UserType.IND,
-    })
-    type: UserType;
+    @Column({ nullable: false, default: 'individual' })
+    type: string;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

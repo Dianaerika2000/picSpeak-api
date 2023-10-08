@@ -11,6 +11,7 @@ import { LanguageModule } from './language/language.module';
 import { InterestModule } from './interest/interest.module';
 import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
 import { ConfigurationModule } from './configuration/configuration.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { ConfigurationModule } from './configuration/configuration.module';
     LanguageModule,
     InterestModule,
     InappropriateContentModule,
-    ConfigurationModule
+    ConfigurationModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],
