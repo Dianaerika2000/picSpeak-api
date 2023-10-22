@@ -29,7 +29,7 @@ import { MailModule } from './mail/mail.module';
         database: configService.get('DB_DATABASE'),
         logging: true,
         autoLoadEntities: true,
-        synchronize: true, 
+        synchronize: true,
         cache: false
       }),
       inject: [ConfigService],
