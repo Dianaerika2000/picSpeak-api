@@ -28,6 +28,11 @@ export class ConfigurationController {
     getLanguageNacionality(@Param('id', ParseIntPipe) id: number) {
         return this.configurationService.getLanguagesNacionality(id);
     }
+    //obtiene totos los lenguajes nacionalidad
+    @Get('language-nacionalities/')//Obtiene todos los lenguajes de una nacionalidad
+    getLanguageNacionalities() {
+        return this.configurationService.getLanguagesNacionalities();
+    }
     //*****************LANGUAGE USER******************************
     //Obtiene  de un usuario todos los lenguajes que estan con status en true
     @Get('/language-user/:id')

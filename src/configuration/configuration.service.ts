@@ -46,6 +46,13 @@ export class ConfigurationService {
 
         return { message: "succes", data: languages }
     }
+    async getLanguagesNacionalities() {
+        const languages = await this.nacionalityRepository.find({
+            relations: ['languageNacionalities']
+        });
+        return { message: "succes", data: languages }
+    }
+
     async createLanguageNacionality(id: number, languageNacionality: CreateLanguageNacionalityDto) {
         const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
         if (!nacionalityFound) {
@@ -71,7 +78,7 @@ export class ConfigurationService {
             language: { id: languageNacionality.language_id }, // Accede a language_id dentro de la propiedad language
             nacionality: { id: id } // Accede a nacionality_id directamente
         });
-        return {message:'success', data:await this.languageNacionalityRepository.save(newLanguageNacionality)};
+        return { message: 'success', data: await this.languageNacionalityRepository.save(newLanguageNacionality) };
     }
 
     async updateLanguageNacionality(id: number, languageNacionality: UpdateLanguageNacionalityDto) {
@@ -97,7 +104,7 @@ export class ConfigurationService {
 
         languageNacionalityFound.status = languageNacionality.status;
 
-        return {message:"success", data:this.languageNacionalityRepository.save(languageNacionalityFound)};
+        return { message: "success", data: this.languageNacionalityRepository.save(languageNacionalityFound) };
     }
     //LANGUAGE USER
     async createSelectLanguageUser(id: number) {
@@ -151,7 +158,7 @@ export class ConfigurationService {
         // Esperar a que todas las promesas se resuelvan
         await Promise.all(promesasDeActualizacion);
 
-        return {message:'success'};
+        return { message: 'success' };
     }
 
     async getLanguagesUser(id: number) {
@@ -164,7 +171,7 @@ export class ConfigurationService {
             where: { status: true, user: { id } },
             relations: ['language'],
         })
-        return {message:'success',data:languageUserFound};
+        return { message: 'success', data: languageUserFound };
     }
 
     async selectNacionalityUser(id: number, selectNacionalityUser: SelectNacionalityUserDto) {
@@ -204,7 +211,7 @@ export class ConfigurationService {
         }
         newMatternLanguageUser.matern_language = true;
         newMatternLanguageUser.status = true;
-        return {message:"success",data:await this.languageUserRepository.save(newMatternLanguageUser)};
+        return { message: "success", data: await this.languageUserRepository.save(newMatternLanguageUser) };
     }
 
     //INTEREST USER
@@ -218,7 +225,7 @@ export class ConfigurationService {
             where: { status: true, user: { id } },
             relations: ['interest'],
         })
-        return {message:"success",data:interestsFound};
+        return { message: "success", data: interestsFound };
     }
     async createSelectInterestUser(id: number) {
         const promesaIterestUser = [];
@@ -236,9 +243,9 @@ export class ConfigurationService {
                 promesaIterestUser.push(this.interestUserRepository.save(newInterestUser));
             });
             await Promise.all(promesaIterestUser);
-            return {message:"success"};
+            return { message: "success" };
         } else {
-            return {message:"nothing"};
+            return { message: "nothing" };
         }
     }
     async updateSelectInterestUser(id: number, interestUser: CreateInterestUserDto[]) {
@@ -270,7 +277,7 @@ export class ConfigurationService {
         // Esperar a que todas las promesas se resuelvan
         await Promise.all(promesasDeActualizacion);
 
-        return {message:"success"};
+        return { message: "success" };
     }
     //INAPPROPRIATE CONTENT USER
     async getInappropriateContentUser(id: number) {
@@ -302,9 +309,9 @@ export class ConfigurationService {
                 promesaInappropriateContentUser.push(this.inappropriateContentUserRepository.save(newInappropriateContentUser));
             });
             await Promise.all(promesaInappropriateContentUser);
-            return {message:"success"};
+            return { message: "success" };
         } else {
-            return {message:"nothing"};
+            return { message: "nothing" };
         }
     }
     async updateSelectInappropriateContentUser(id: number, inappropriateContentUser: CreateInappropriateContentUserDto[]) {
@@ -336,6 +343,6 @@ export class ConfigurationService {
         // Esperar a que todas las promesas se resuelvan
         await Promise.all(promesasDeActualizacion);
 
-        return {message:'success'};
+        return { message: 'success' };
     }
 }
