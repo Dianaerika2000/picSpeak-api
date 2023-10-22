@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -32,6 +33,11 @@ export class AuthController {
     @UseGuards(AuthGuard)
     profile(@Request() req) {
         return req.user;
+    }
+
+    @Post('verify_email')
+    validateEmail(@Body() verifyEmailDto: VerifyEmailDto) {
+      return this.authService.verifyEmail(verifyEmailDto);
     }
 
 }

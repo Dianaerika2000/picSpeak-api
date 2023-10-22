@@ -29,6 +29,7 @@ export class IndividualUsersService {
     individual.nationality = createIndividualUserDto.nationality;
     individual.email = createIndividualUserDto.email;
     individual.password = createIndividualUserDto.password;
+    individual.activationToken = createIndividualUserDto.activationToken;
     individual.user = newUser;
 
     return this.individualUserRepository.save(createIndividualUserDto);
@@ -44,6 +45,14 @@ export class IndividualUsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} individualUser`;
+  }
+
+  async findOneByToke(token: string) {
+    return this.individualUserRepository.findOneBy({ activationToken: token });
+  }
+
+  async save(individualUser: IndividualUser) {
+    return this.individualUserRepository.save(individualUser);
   }
 
   update(id: number, updateIndividualUserDto: UpdateIndividualUserDto) {
