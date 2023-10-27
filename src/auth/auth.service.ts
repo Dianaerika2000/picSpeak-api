@@ -19,9 +19,9 @@ export class AuthService {
         email, 
         password, 
         birthDate, 
-        gender, 
-        nationality, 
-        type, 
+        //gender, 
+        /* nationality, 
+        type,  */
         photo_url}: RegisterDto) {
         const existUser = await this.individualUsersService.findOneByEmail(email);
 
@@ -32,13 +32,13 @@ export class AuthService {
         const hashedPassword = await bcryptjs.hash(password, 10);
 
         const newUser = await this.individualUsersService.create({
-            type, 
+            //type, 
             photo_url, 
             name, 
             lastname, 
             birthDate, 
-            gender, 
-            nationality, 
+            //gender, 
+            //nationality, 
             email, 
             password: hashedPassword
         });

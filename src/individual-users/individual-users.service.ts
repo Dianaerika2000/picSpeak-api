@@ -17,7 +17,7 @@ export class IndividualUsersService {
 
   async create(createIndividualUserDto: CreateIndividualUserDto) {
     const user = new User();
-    user.type = createIndividualUserDto.type;
+    //user.type = createIndividualUserDto.type;
     user.photoUrl = createIndividualUserDto.photo_url;
     const newUser = await this.userRepository.save(user);
 
@@ -25,8 +25,8 @@ export class IndividualUsersService {
     individual.name = createIndividualUserDto.name;
     individual.lastname = createIndividualUserDto.lastname;
     individual.birthDate = createIndividualUserDto.birthDate;
-    individual.gender = createIndividualUserDto.gender;
-    individual.nationality = createIndividualUserDto.nationality;
+    //individual.gender = createIndividualUserDto.gender;
+    //individual.nationality = createIndividualUserDto.nationality;
     individual.email = createIndividualUserDto.email;
     individual.password = createIndividualUserDto.password;
     individual.user = newUser;
