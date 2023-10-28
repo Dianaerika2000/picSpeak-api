@@ -27,6 +27,12 @@ export class IndividualUser {
     @Column({ nullable: false})
     password: string;
 
+    @Column({ nullable:true, name: 'activation_token'})
+    activationToken: string;
+
+    @Column({ type: 'boolean', default: false})
+    active: boolean;
+
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
 

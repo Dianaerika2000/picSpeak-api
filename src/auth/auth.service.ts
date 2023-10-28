@@ -4,13 +4,16 @@ import * as bcryptjs from "bcryptjs";
 import { IndividualUsersService } from 'src/individual-users/individual-users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from 'src/mail/mail.service';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         private readonly individualUsersService: IndividualUsersService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly mailService: MailService,
     ){}
 
     async register({
@@ -29,6 +32,8 @@ export class AuthService {
             throw new BadRequestException('Email already exists');
         }
 
+        const token = this.generateRandomNumber().toString();
+
         const hashedPassword = await bcryptjs.hash(password, 10);
 
         const newUser = await this.individualUsersService.create({
@@ -40,8 +45,11 @@ export class AuthService {
             //gender, 
             //nationality, 
             email, 
-            password: hashedPassword
+            password: hashedPassword,
+            activationToken: token
         });
+
+        await this.mailService.sendVerificationEmail(email, token);
 
         return {
             message: "User created successfully",
@@ -74,5 +82,39 @@ export class AuthService {
 
     async profile({ email }: { email: string }) {
         return await this.individualUsersService.findOneByEmail(email);
+    }
+
+    async verifyEmail(verifyEmailDto: VerifyEmailDto) {
+        try {
+          const { token } = verifyEmailDto;
+          const user = await this.individualUsersService.findOneByToke(token);
+    
+          if (!user) {
+            throw new BadRequestException('INVALID_TOKEN');
+          }
+    
+          if (user.active) {
+            throw new BadRequestException('USER_ALREADY_ACTIVE');
+          }
+    
+          user.active = true;
+          user.activationToken = null;
+          await this.individualUsersService.save(user);
+          return {
+            message: 'Email del usuario verificado correctamente',
+            user
+          }
+        } catch (error) {
+          return error;
+        }
+    }
+
+    generateRandomNumber() {
+        const min = 1000;
+        const max = 9999; 
+    
+        const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    
+        return randomNumber;
     }
 }

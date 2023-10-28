@@ -10,5 +10,6 @@ export class CreateIndividualUserDto {
     //nationality: string;
     email: string;
     password: string;
+    activationToken: string;
     user?: User;
 }
