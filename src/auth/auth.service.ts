@@ -6,6 +6,23 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyEmailDto } from './dto/verify-email.dto';
+import * as multer from 'multer';
+import * as AWS from 'aws-sdk';
+import * as multerS3 from 'multer-s3';
+import { ConfigService } from "@nestjs/config";
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // Carga las variables de entorno desde el archivo .env
+
+const configService = new ConfigService();
+const AWS_S3_BUCKET_NAME = configService.get('AWS_BUCKET');
+const s3 = new AWS.S3();
+
+AWS.config.update({
+    accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+    secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+    region: configService.get('AWS_DEFAULT_REGION')
+});
 
 @Injectable()
 export class AuthService {
@@ -14,18 +31,28 @@ export class AuthService {
         private readonly individualUsersService: IndividualUsersService,
         private readonly jwtService: JwtService,
         private readonly mailService: MailService,
-    ){}
+    ) { }
 
     async register({
-        name, 
-        lastname, 
-        email, 
-        password, 
-        birthDate, 
-        gender, 
-        nationality, 
-        type, 
-        photo_url}: RegisterDto) {
+        name,
+        lastname,
+        username,
+        email,
+        password,
+        birthDate,
+        photo_url }: RegisterDto) {
+
+        const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
+        const imageBuffer = Buffer.from(base64Image, 'base64');
+
+        await s3.upload({
+            Bucket: AWS_S3_BUCKET_NAME,
+            Key: `${Date.now().toString()} - ${name}`,
+            Body: imageBuffer,
+            ACL: 'public-read', 
+            ContentType: 'image/png', 
+        }).promise();
+
         const existUser = await this.individualUsersService.findOneByEmail(email);
 
         if (existUser) {
@@ -37,14 +64,12 @@ export class AuthService {
         const hashedPassword = await bcryptjs.hash(password, 10);
 
         const newUser = await this.individualUsersService.create({
-            type, 
-            photo_url, 
-            name, 
-            lastname, 
-            birthDate, 
-            gender, 
-            nationality, 
-            email, 
+            photo_url,
+            name,
+            lastname,
+            username,
+            birthDate,
+            email,
             password: hashedPassword,
             activationToken: token
         });
@@ -57,7 +82,7 @@ export class AuthService {
         };
     }
 
-    async login({ email, password}: LoginDto) {
+    async login({ email, password }: LoginDto) {
         const user = await this.individualUsersService.findOneByEmail(email);
 
         if (!user) {
@@ -86,35 +111,35 @@ export class AuthService {
 
     async verifyEmail(verifyEmailDto: VerifyEmailDto) {
         try {
-          const { token } = verifyEmailDto;
-          const user = await this.individualUsersService.findOneByToke(token);
-    
-          if (!user) {
-            throw new BadRequestException('INVALID_TOKEN');
-          }
-    
-          if (user.active) {
-            throw new BadRequestException('USER_ALREADY_ACTIVE');
-          }
-    
-          user.active = true;
-          user.activationToken = null;
-          await this.individualUsersService.save(user);
-          return {
-            message: 'Email del usuario verificado correctamente',
-            user
-          }
+            const { token } = verifyEmailDto;
+            const user = await this.individualUsersService.findOneByToke(token);
+
+            if (!user) {
+                throw new BadRequestException('INVALID_TOKEN');
+            }
+
+            if (user.active) {
+                throw new BadRequestException('USER_ALREADY_ACTIVE');
+            }
+
+            user.active = true;
+            user.activationToken = null;
+            await this.individualUsersService.save(user);
+            return {
+                message: 'Email del usuario verificado correctamente',
+                user
+            }
         } catch (error) {
-          return error;
+            return error;
         }
     }
 
     generateRandomNumber() {
         const min = 1000;
-        const max = 9999; 
-    
+        const max = 9999;
+
         const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    
+
         return randomNumber;
     }
 }
