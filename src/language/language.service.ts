@@ -24,9 +24,29 @@ export class LanguageService {
             return new HttpException('Language already exists', HttpStatus.CONFLICT);
         }
         const newLanguage = this.languageRepository.create(language);
-        return { message: 'succes', data: await this.languageRepository.save(newLanguage)};
+        return { message: 'succes', data: await this.languageRepository.save(newLanguage) };
 
     }
+    async createLanguages(languages: CreateLanguageDto[]) {
+        const createdLanguages = [];
+
+        for (const language of languages) {
+            const languageFound = await this.languageRepository.findOne({
+                where: {
+                    name: language.name,
+                },
+            });
+
+            if (!languageFound) {
+                const newLanguage = this.languageRepository.create(language);
+                await this.languageRepository.save(newLanguage);
+                createdLanguages.push(newLanguage);
+            }
+        }
+
+        return { message: 'success', data: createdLanguages };
+    }
+
 
     async getLanguages() {
         return { message: 'succes', data: await this.languageRepository.find() };
@@ -37,7 +57,7 @@ export class LanguageService {
         if (!languageFound) {
             return new HttpException('Language not found', HttpStatus.NOT_FOUND)
         }
-        return { message: 'succes', data: languageFound};
+        return { message: 'succes', data: languageFound };
     }
 
     async deleteLanguage(id: number) {
@@ -45,7 +65,7 @@ export class LanguageService {
         if (result.affected === 0) {
             return new HttpException('Language not found', HttpStatus.NOT_FOUND);
         }
-        return { message: 'succes'}
+        return { message: 'succes' }
     }
 
     async updateLanguage(id: number, language: UpdateLanguageDto) {
@@ -55,7 +75,7 @@ export class LanguageService {
         }
 
         const updateLanguage = Object.assign(languageFound, language);//FORMA DOS
-        return { message: 'succes', data: await this.languageRepository.save(updateLanguage)};
+        return { message: 'succes', data: await this.languageRepository.save(updateLanguage) };
     }
 
 }

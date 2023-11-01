@@ -11,7 +11,7 @@ export class NacionalityController {
 
 
     @Get()
-    getNacionalities(){
+    getNacionalities() {
         return this.nacionalitiesService.getNacionalities();
     }
 
@@ -20,6 +20,11 @@ export class NacionalityController {
         return this.nacionalitiesService.createNacionality(newNacionality);
     }
 
+    //Registrar una lista de languages
+    @Post('creates')
+    createNacionalities(@Body() newNationalities: CreateNacionalityDto[]) {
+        return this.nacionalitiesService.createNacionalities(newNationalities);
+    }
 
     @Get(':id')
     getNacionality(@Param('id', ParseIntPipe) id: number) {

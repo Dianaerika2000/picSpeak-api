@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { User } from "src/users/entities/user.entity";
-import { LanguageNacionality } from "../../configuration/entities/language_nacionality.entity";
 
 @Entity() //convierte inmediatamente a una tabla
 export class Nacionality {
@@ -22,6 +21,5 @@ export class Nacionality {
     @OneToMany(() => User, (user) => user.nacionality)
     users: User[]
 
-    @OneToMany(() => LanguageNacionality, (languageNacionalities) => languageNacionalities.nacionality)
-    languageNacionalities: LanguageNacionality[];
+   
 }

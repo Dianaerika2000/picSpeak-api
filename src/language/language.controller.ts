@@ -7,7 +7,7 @@ import { UpdateLanguageDto } from './dto/update-language.dto';
 @Controller('language')
 export class LanguageController {
 
-    constructor(private languageService:LanguageService) { }
+    constructor(private languageService: LanguageService) { }
 
 
     @Get()
@@ -19,7 +19,11 @@ export class LanguageController {
     createLanguage(@Body() newLanguage: CreateLanguageDto) {
         return this.languageService.createLanguage(newLanguage);
     }
-
+    //Registrar una lista de languages
+    @Post('creates')
+    createLanguages(@Body() newLanguages: CreateLanguageDto[]) {
+        return this.languageService.createLanguages(newLanguages);
+    }
 
     @Get(':id')
     getLanguage(@Param('id', ParseIntPipe) id: number) {

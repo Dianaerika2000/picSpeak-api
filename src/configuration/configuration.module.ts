@@ -5,7 +5,6 @@ import { InterestUser } from './entities/interest_user.entity';
 import { LanguageUser } from './entities/language_user.entity';
 import { ConfigurationController } from './configuration.controller';
 import { ConfigurationService } from './configuration.service';
-import { LanguageNacionality } from './entities/language_nacionality.entity';
 import { Language } from 'src/language/entities/language.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Nacionality } from 'src/nacionality/entities/nacionality.entity';
@@ -13,7 +12,7 @@ import { InappropriateContent } from 'src/inappropriate-content/entities/inappro
 import { Interest } from 'src/interest/entities/interest.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([InappropriateContentUser, InterestUser, LanguageUser, LanguageNacionality, Language, User, Nacionality, InappropriateContent, Interest])],
+    imports: [TypeOrmModule.forFeature([InappropriateContentUser, InterestUser, LanguageUser, Language, User, Nacionality, InappropriateContent, Interest])],
     controllers: [ConfigurationController],
     providers: [ConfigurationService]
 })

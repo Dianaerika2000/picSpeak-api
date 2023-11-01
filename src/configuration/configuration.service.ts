@@ -1,23 +1,25 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LanguageNacionality } from './entities/language_nacionality.entity';
+// import { LanguageNacionality } from './entities/language_nacionality.entity';
 import { Repository } from 'typeorm';
-import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
+// import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
 import { LanguageUser } from './entities/language_user.entity';
 import { InterestUser } from './entities/interest_user.entity';
 import { InappropriateContentUser } from './entities/inappropriate_content_user.entity';
 import { CreateLanguageUserDto } from './dto/create-language-user.dto';
-import { UpdateLanguageUserDto } from './dto/update-language-user.dto';
+// import { UpdateLanguageUserDto } from './dto/update-language-user.dto';
 import { Language } from 'src/language/entities/language.entity';
 import { SelectNacionalityUserDto } from './dto/select-nacionality-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Nacionality } from 'src/nacionality/entities/nacionality.entity';
-import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
+// import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
 import { SelectNacionalityMatternLanguageUserDto } from './dto/select-nacionality-mattern-language-user.dto';
 import { InappropriateContent } from 'src/inappropriate-content/entities/inappropriate-content.entity';
 import { CreateInappropriateContentUserDto } from './dto/create-inappropriate-content-user.dto';
 import { Interest } from 'src/interest/entities/interest.entity';
 import { CreateInterestUserDto } from './dto/create-interest-user.dto';
+import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language.dto';
+// import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language-user.dto';
 
 @Injectable()
 export class ConfigurationService {
@@ -27,85 +29,88 @@ export class ConfigurationService {
         @InjectRepository(Language) private languageRepository: Repository<Language>,
         @InjectRepository(InappropriateContent) private inappropriateContentRepository: Repository<InappropriateContent>,
         @InjectRepository(Interest) private interestRepository: Repository<Interest>,
-        @InjectRepository(LanguageNacionality) private languageNacionalityRepository: Repository<LanguageNacionality>,
+        // @InjectRepository(LanguageNacionality) private languageNacionalityRepository: Repository<LanguageNacionality>,
         @InjectRepository(LanguageUser) private languageUserRepository: Repository<LanguageUser>,
         @InjectRepository(InterestUser) private interestUserRepository: Repository<InterestUser>,
         @InjectRepository(InappropriateContentUser) private inappropriateContentUserRepository: Repository<InappropriateContentUser>
     ) { }
     //LANGUAGE NACIONALITY
 
-    async getLanguagesNacionality(id: number) {
-        const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
-        if (!nacionalityFound) {
-            return new HttpException('Nacionality not found', HttpStatus.NOT_FOUND)
-        }
-        const languages = await this.languageNacionalityRepository.find({
-            where: { nacionality: { id } },
-            relations: ['language'],
-        });
+    // async getLanguagesNacionality(id: number) {
+    //     const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
+    //     if (!nacionalityFound) {
+    //         return new HttpException('Nacionality not found', HttpStatus.NOT_FOUND)
+    //     }
+    //     const languages = await this.languageNacionalityRepository.find({
+    //         where: { nacionality: { id } },
+    //         relations: ['language'],
+    //     });
 
-        return { message: "succes", data: languages }
-    }
-    async getLanguagesNacionalities() {
-        const languages = await this.nacionalityRepository.find({
-            relations: ['languageNacionalities']
-        });
-        return { message: "succes", data: languages }
-    }
+    //     return { message: "succes", data: languages }
+    // }
+    // async getLanguagesNacionalities() {
+    //     const languages = await this.nacionalityRepository
+    //         .createQueryBuilder('nacionality')
+    //         .leftJoinAndSelect('nacionality.languageNacionalities', 'languageNacionalities')
+    //         .leftJoinAndSelect('languageNacionalities.language', 'language') // Agrega esto para cargar la relación 'language'
+    //         .getMany();
+    //     return { message: "success", data: languages }
+    // }
 
-    async createLanguageNacionality(id: number, languageNacionality: CreateLanguageNacionalityDto) {
-        const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
-        if (!nacionalityFound) {
-            return new HttpException('Nacionalidad no encontrada', HttpStatus.NOT_FOUND);
-        }
 
-        const languageFound = await this.languageRepository.findOne({ where: { id: languageNacionality.language_id } });
-        if (!languageFound) {
-            return new HttpException('Lenguaje no encontrada', HttpStatus.NOT_FOUND);
-        }
+    // async createLanguageNacionality(id: number, languageNacionality: CreateLanguageNacionalityDto) {
+    //     const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
+    //     if (!nacionalityFound) {
+    //         return new HttpException('Nacionalidad no encontrada', HttpStatus.NOT_FOUND);
+    //     }
 
-        const languageNacionalityFound = await this.languageNacionalityRepository.findOne({
-            where: {
-                language: { id: languageNacionality.language_id },
-                nacionality: { id }
-            }
-        })
+    //     const languageFound = await this.languageRepository.findOne({ where: { id: languageNacionality.language_id } });
+    //     if (!languageFound) {
+    //         return new HttpException('Lenguaje no encontrada', HttpStatus.NOT_FOUND);
+    //     }
 
-        if (languageNacionalityFound) {
-            return new HttpException('Lenguaje ya está registrado a la nacionalidad', HttpStatus.CONFLICT);
-        }
-        const newLanguageNacionality = this.languageNacionalityRepository.create({
-            language: { id: languageNacionality.language_id }, // Accede a language_id dentro de la propiedad language
-            nacionality: { id: id } // Accede a nacionality_id directamente
-        });
-        return { message: 'success', data: await this.languageNacionalityRepository.save(newLanguageNacionality) };
-    }
+    //     const languageNacionalityFound = await this.languageNacionalityRepository.findOne({
+    //         where: {
+    //             language: { id: languageNacionality.language_id },
+    //             nacionality: { id }
+    //         }
+    //     })
 
-    async updateLanguageNacionality(id: number, languageNacionality: UpdateLanguageNacionalityDto) {
-        const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
-        if (!nacionalityFound) {
-            return new HttpException('Nacionalidad no encontrada', HttpStatus.NOT_FOUND);
-        }
+    //     if (languageNacionalityFound) {
+    //         return new HttpException('Lenguaje ya está registrado a la nacionalidad', HttpStatus.CONFLICT);
+    //     }
+    //     const newLanguageNacionality = this.languageNacionalityRepository.create({
+    //         language: { id: languageNacionality.language_id }, // Accede a language_id dentro de la propiedad language
+    //         nacionality: { id: id } // Accede a nacionality_id directamente
+    //     });
+    //     return { message: 'success', data: await this.languageNacionalityRepository.save(newLanguageNacionality) };
+    // }
 
-        const languageFound = await this.languageRepository.findOne({ where: { id: languageNacionality.language_id } });
-        if (!languageFound) {
-            return new HttpException('Lenguaje no encontrada', HttpStatus.NOT_FOUND);
-        }
+    // async updateLanguageNacionality(id: number, languageNacionality: UpdateLanguageNacionalityDto) {
+    //     const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id } });
+    //     if (!nacionalityFound) {
+    //         return new HttpException('Nacionalidad no encontrada', HttpStatus.NOT_FOUND);
+    //     }
 
-        const languageNacionalityFound = await this.languageNacionalityRepository.findOne({
-            where: {
-                language: { id: languageNacionality.language_id },
-                nacionality: { id }
-            }
-        })
-        if (!languageNacionalityFound) {
-            return new HttpException('Lenguaje no encontrado en la nacionalidad', HttpStatus.NOT_FOUND)
-        }
+    //     const languageFound = await this.languageRepository.findOne({ where: { id: languageNacionality.language_id } });
+    //     if (!languageFound) {
+    //         return new HttpException('Lenguaje no encontrada', HttpStatus.NOT_FOUND);
+    //     }
 
-        languageNacionalityFound.status = languageNacionality.status;
+    //     const languageNacionalityFound = await this.languageNacionalityRepository.findOne({
+    //         where: {
+    //             language: { id: languageNacionality.language_id },
+    //             nacionality: { id }
+    //         }
+    //     })
+    //     if (!languageNacionalityFound) {
+    //         return new HttpException('Lenguaje no encontrado en la nacionalidad', HttpStatus.NOT_FOUND)
+    //     }
 
-        return { message: "success", data: this.languageNacionalityRepository.save(languageNacionalityFound) };
-    }
+    //     languageNacionalityFound.status = languageNacionality.status;
+
+    //     return { message: "success", data: this.languageNacionalityRepository.save(languageNacionalityFound) };
+    // }
     //LANGUAGE USER
     async createSelectLanguageUser(id: number) {
         const promesaLanguageUser = [];
@@ -214,6 +219,61 @@ export class ConfigurationService {
         return { message: "success", data: await this.languageUserRepository.save(newMatternLanguageUser) };
     }
 
+    async selectLanguageNationalityUser(id: number, selectLanguageNationalityUser: SelectNacionalityLanguageUserDto) {
+        const userFound = await this.userRepository.findOne({ where: { id }, relations: ['nacionality'] });
+        if (!userFound) {
+            return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
+        }
+
+        const languageFound = await this.languageRepository.findOne({ where: { id: selectLanguageNationalityUser.language_id } });
+        if (!languageFound) {
+            return new HttpException('Lenguaje no encontrada', HttpStatus.NOT_FOUND);
+        }
+
+        const nacionalityFound = await this.nacionalityRepository.findOne({ where: { id: selectLanguageNationalityUser.nationality_id } });
+        if (!nacionalityFound) {
+            return new HttpException('Nacionalidad no encontrada', HttpStatus.NOT_FOUND);
+        }
+
+        const languageUserFound = await this.languageUserRepository.findOne({
+            where: { matern_language: true, user: { id } },
+        })
+        //  return { message: "lenguaje usuario", data: languageUserFound }
+        if (languageUserFound) { //quiere decir que hay un language user con matern language registrado
+            //return "ingresa true";
+            languageUserFound.status = false;
+            languageUserFound.matern_language = false;
+            Promise.all([await this.languageUserRepository.save(languageUserFound)]);//coloca en false al language user seleccionado anteriormente
+
+            const newMatternLanguageUser = await this.languageUserRepository.findOne({
+                where: { user: { id }, language: { id: selectLanguageNationalityUser.language_id } }
+            })
+
+            if (!newMatternLanguageUser) {
+                userFound.nacionality = nacionalityFound;
+                const newLanguageUser = this.languageUserRepository.create({
+                    status: true,
+                    matern_language: true,
+                    language: { id: selectLanguageNationalityUser.language_id }, // Asigna el ID del idioma
+                    user: { id: id }, // Asigna el ID del usuario proporcionado
+                });
+
+                return { message: "success", data: [await this.languageUserRepository.save(newLanguageUser), await this.userRepository.save(userFound)] };
+            } else {
+
+                newMatternLanguageUser.matern_language = true;
+                newMatternLanguageUser.status = true;
+
+                userFound.nacionality = nacionalityFound;
+                return { message: "success true", data: [await this.languageUserRepository.save(newMatternLanguageUser), await this.userRepository.save(userFound)] };
+            }
+        } else {//quiere decir que no hay y entonces crearemos uno
+            //   return "ingresa false";
+            return "no hay user language";
+        }
+
+
+    }
     //INTEREST USER
     async getInterestsUser(id: number) {
         const userFound = await this.userRepository.findOne({ where: { id } });
