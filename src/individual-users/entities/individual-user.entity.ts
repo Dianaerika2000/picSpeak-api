@@ -12,13 +12,16 @@ export class IndividualUser {
     @Column()
     lastname: string;
 
+    @Column({ nullable: true})
+    username: string; 
+
     @Column({ name: 'birth_date', nullable: false})
     birthDate: Date;
 
-    @Column({ nullable: false})
-    gender: string;
+    @Column({ nullable: true})
+    gender: string; 
 
-    @Column({ nullable: false})
+    @Column({ nullable: true})
     nationality: string;
 
     @Column({ unique: true, nullable: false})
