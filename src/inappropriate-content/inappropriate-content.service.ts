@@ -25,7 +25,26 @@ export class InappropriateContentService {
         return { message: 'success', data: await this.inappropriateContentRepository.save(newInappropriateContent) };
 
     }
+    async createInappropriateContents(inappropriateContents: CreateInappropriateContentDto[]) {
+        const createdInappropriateContents = [];
 
+        for (const inappropriateContent of inappropriateContents) {
+            const inappropriateContentFound = await this.inappropriateContentRepository.findOne({
+                where: {
+                    name: inappropriateContent.name
+                }
+            })
+
+            if (!inappropriateContentFound) {
+                const newInappropriateContent = this.inappropriateContentRepository.create(inappropriateContent);
+                await this.inappropriateContentRepository.save(newInappropriateContent);
+                createdInappropriateContents.push(newInappropriateContent);
+            }
+        }
+
+        return { message: 'success', data: createdInappropriateContents };
+    }
+    
     async getInappropriateContents() {
         return { message: 'success', data: await this.inappropriateContentRepository.find() };
     }

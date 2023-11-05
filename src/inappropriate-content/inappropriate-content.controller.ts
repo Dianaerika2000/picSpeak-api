@@ -19,6 +19,10 @@ export class InappropriateContentController {
         return this.inappropriateContentService.createInappropriateContent(newInappropriateContent);
     }
 
+    @Post("create")
+    createInappropriateContents(@Body() newInappropriateContent: CreateInappropriateContentDto[]) {
+        return this.inappropriateContentService.createInappropriateContents(newInappropriateContent);
+    }
 
     @Get(':id')
     getInappropriateContent(@Param('id', ParseIntPipe) id: number) {

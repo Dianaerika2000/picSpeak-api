@@ -16,6 +16,10 @@ export class InterestController {
     createInterest(@Body() newInterest: CreateInterestDto) {
         return this.interestService.createInterest(newInterest);
     }
+    @Post("create")
+    createInterests(@Body() newInterest: CreateInterestDto[]) {
+        return this.interestService.createInterests(newInterest);
+    }
 
 
     @Get(':id')
