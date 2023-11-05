@@ -6,8 +6,6 @@ export class CreateIndividualUserDto {
     lastname?: string;
     username?: string;
     birthDate?: Date;
-    //gender?: string;      
-    //nationality: string;
     email: string;
     password: string;
     activationToken: string;

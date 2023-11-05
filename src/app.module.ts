@@ -12,6 +12,8 @@ import { InterestModule } from './interest/interest.module';
 import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
+import { ResourcesModule } from './resources/resources.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -42,7 +44,9 @@ import { MailModule } from './mail/mail.module';
     InterestModule,
     InappropriateContentModule,
     ConfigurationModule,
-    MailModule
+    MailModule,
+    ResourcesModule,
+    ImagesModule
   ],
   controllers: [AppController],
   providers: [AppService],
