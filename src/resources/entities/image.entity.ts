@@ -2,7 +2,7 @@ import { Resource } from "src/resources/entities/resource.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
 
 @Entity()
-export class Image {
+export class Image extends Resource {
     @Column({ primary: true, generated: true})
     id: number;
 
@@ -23,8 +23,4 @@ export class Image {
 
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
-
-    @OneToOne(() => Resource, resource => resource.image, { cascade: true})
-    @JoinColumn({ name: 'resource_id'})
-    resource: Resource;
 }

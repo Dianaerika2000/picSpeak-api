@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { ResourcesService } from './resources.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
-import { UpdateResourceDto } from './dto/update-resource.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Resources')
 @Controller('resources')
@@ -24,13 +24,20 @@ export class ResourcesController {
     return this.resourcesService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResourceDto: UpdateResourceDto) {
-    return this.resourcesService.update(+id, updateResourceDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.resourcesService.remove(+id);
+  }
+
+  @Post('verify-content')
+  @UseInterceptors(FileInterceptor('image'))
+  async verifyContent(@UploadedFile() image, @Res() res) {
+    try {
+      const result = await this.resourcesService.getLabelFromRekognition(image);
+      return res.send({ result });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ error: error.message });
+    }
   }
 }

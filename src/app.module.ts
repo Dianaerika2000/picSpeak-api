@@ -13,7 +13,6 @@ import { InappropriateContentModule } from './inappropriate-content/inappropriat
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
 import { ResourcesModule } from './resources/resources.module';
-import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -46,7 +45,6 @@ import { ImagesModule } from './images/images.module';
     ConfigurationModule,
     MailModule,
     ResourcesModule,
-    ImagesModule
   ],
   controllers: [AppController],
   providers: [AppService],
