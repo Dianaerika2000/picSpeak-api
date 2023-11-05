@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Resource } from './entities/resource.entity';
@@ -56,15 +56,20 @@ export class ResourcesService {
   }
 
   findAll() {
-    return `This action returns all resources`;
+    return this.resourceRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} resource`;
+    return this.resourceRepository.findOne({ where: {id} });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} resource`;
+  async remove(id: number) {
+    const resourceToRemove = await this.resourceRepository.findOne({ where: {id} });
+
+    if (!resourceToRemove) {
+      throw new NotFoundException(`Resource with ID ${id} not found`);   
+    }
+    return this.resourceRepository.remove(resourceToRemove);
   }
 
   async getLabelFromRekognition(image: any) {
