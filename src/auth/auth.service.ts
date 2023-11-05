@@ -6,9 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyEmailDto } from './dto/verify-email.dto';
-import * as multer from 'multer';
 import * as AWS from 'aws-sdk';
-import * as multerS3 from 'multer-s3';
 import { ConfigService } from "@nestjs/config";
 import * as dotenv from 'dotenv';
 
