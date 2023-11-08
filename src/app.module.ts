@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { IndividualUsersModule } from './individual-users/individual-users.module';
 import { AuthModule } from './auth/auth.module';
 import { NacionalityModule } from './nacionality/nacionality.module';
 import { LanguageModule } from './language/language.module';
@@ -36,7 +35,6 @@ import { ResourcesModule } from './resources/resources.module';
       inject: [ConfigService],
     }),
     UsersModule,
-    IndividualUsersModule,
     AuthModule,
     NacionalityModule,
     LanguageModule,

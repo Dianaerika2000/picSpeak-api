@@ -29,8 +29,8 @@ export class AuthController {
     }
 
     @ApiBearerAuth()
-    @Get('profile')
     @UseGuards(AuthGuard)
+    @Get('profile')
     profile(@Request() req) {
         return req.user;
     }
@@ -39,5 +39,4 @@ export class AuthController {
     validateEmail(@Body() verifyEmailDto: VerifyEmailDto) {
       return this.authService.verifyEmail(verifyEmailDto);
     }
-
 }
