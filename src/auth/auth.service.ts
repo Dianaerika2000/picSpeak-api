@@ -9,6 +9,8 @@ import * as AWS from 'aws-sdk';
 import { ConfigService } from "@nestjs/config";
 import * as dotenv from 'dotenv';
 import { UsersService } from 'src/users/users.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 dotenv.config();
 
@@ -47,8 +49,8 @@ export class AuthService {
             Bucket: AWS_S3_BUCKET_NAME,
             Key: `${Date.now().toString()} - ${name}`,
             Body: imageBuffer,
-            ACL: 'public-read', 
-            ContentType: 'image/png', 
+            ACL: 'public-read',
+            ContentType: 'image/png',
         }).promise();
 
         const existUser = await this.usersService.findOneByEmail(email);
@@ -72,8 +74,6 @@ export class AuthService {
             activationToken: token,
             type: 'individual'
         });
-
-        console.log(newUser);
 
         const user = await this.usersService.findOneByEmail(newUser.email);
         const payload = { user };
@@ -101,16 +101,14 @@ export class AuthService {
             throw new UnauthorizedException("Invalid password");
         }
 
-        const payload = { data: { user } };
+        const payload = { user };
         const token = await this.jwtService.signAsync(payload);
 
         return {
             message: "Login successful",
-            data: {
-                user: {
-                    token: token,
-                    email: user.email
-                }              
+            user: {
+                token: token,
+                email: user.email
             }
         };
     }
@@ -151,5 +149,9 @@ export class AuthService {
         const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
         return randomNumber;
+    }
+
+    updateUserProfile(userId: number, updateData: UpdateProfileDto) {
+        return this.usersService.update(userId, updateData);
     }
 }
