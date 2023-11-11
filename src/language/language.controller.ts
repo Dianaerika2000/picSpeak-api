@@ -3,7 +3,9 @@ import { CreateLanguageDto } from './dto/create-language.dto';
 import { LanguageService } from './language.service';
 import { Language } from './entities/language.entity';
 import { UpdateLanguageDto } from './dto/update-language.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Language')
 @Controller('language')
 export class LanguageController {
 

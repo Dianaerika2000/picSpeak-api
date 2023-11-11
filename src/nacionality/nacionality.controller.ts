@@ -3,7 +3,9 @@ import { CreateNacionalityDto } from './dto/create-nacionality.dto';
 import { NacionalityService } from "./nacionality.service";
 import { Nacionality } from './entities/nacionality.entity';
 import { UpdateNacionalityDto } from './dto/update-nacionality.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Nacionality')
 @Controller('nacionality')
 export class NacionalityController {
 

@@ -1,25 +1,20 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { LanguageNacionality } from './entities/language_nacionality.entity';
 import { Repository } from 'typeorm';
-// import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
 import { LanguageUser } from './entities/language_user.entity';
 import { InterestUser } from './entities/interest_user.entity';
 import { InappropriateContentUser } from './entities/inappropriate_content_user.entity';
 import { CreateLanguageUserDto } from './dto/create-language-user.dto';
-// import { UpdateLanguageUserDto } from './dto/update-language-user.dto';
 import { Language } from 'src/language/entities/language.entity';
 import { SelectNacionalityUserDto } from './dto/select-nacionality-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Nacionality } from 'src/nacionality/entities/nacionality.entity';
-// import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
 import { SelectNacionalityMatternLanguageUserDto } from './dto/select-nacionality-mattern-language-user.dto';
 import { InappropriateContent } from 'src/inappropriate-content/entities/inappropriate-content.entity';
 import { CreateInappropriateContentUserDto } from './dto/create-inappropriate-content-user.dto';
 import { Interest } from 'src/interest/entities/interest.entity';
 import { CreateInterestUserDto } from './dto/create-interest-user.dto';
 import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language.dto';
-// import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language-user.dto';
 
 @Injectable()
 export class ConfigurationService {
@@ -29,7 +24,6 @@ export class ConfigurationService {
         @InjectRepository(Language) private languageRepository: Repository<Language>,
         @InjectRepository(InappropriateContent) private inappropriateContentRepository: Repository<InappropriateContent>,
         @InjectRepository(Interest) private interestRepository: Repository<Interest>,
-        // @InjectRepository(LanguageNacionality) private languageNacionalityRepository: Repository<LanguageNacionality>,
         @InjectRepository(LanguageUser) private languageUserRepository: Repository<LanguageUser>,
         @InjectRepository(InterestUser) private interestUserRepository: Repository<InterestUser>,
         @InjectRepository(InappropriateContentUser) private inappropriateContentUserRepository: Repository<InappropriateContentUser>
@@ -287,6 +281,7 @@ export class ConfigurationService {
         })
         return { message: "success", data: interestsFound };
     }
+    
     async createSelectInterestUser(id: number) {
         const promesaIterestUser = [];
         const interests = await this.interestRepository.find();

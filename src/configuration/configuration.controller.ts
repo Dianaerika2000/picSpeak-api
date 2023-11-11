@@ -1,15 +1,14 @@
 import { Body, Controller, Get, Post, Put, Param, ParseIntPipe } from '@nestjs/common';
-// import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
 import { ConfigurationService } from './configuration.service';
 import { CreateLanguageUserDto } from './dto/create-language-user.dto';
 import { SelectNacionalityUserDto } from './dto/select-nacionality-user.dto';
-// import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
 import { SelectNacionalityMatternLanguageUserDto } from './dto/select-nacionality-mattern-language-user.dto';
 import { CreateInappropriateContentUserDto } from './dto/create-inappropriate-content-user.dto';
 import { CreateInterestUserDto } from './dto/create-interest-user.dto';
 import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language.dto';
-// import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Configuration')
 @Controller('configuration')
 export class ConfigurationController {
     constructor(private configurationService: ConfigurationService) { }

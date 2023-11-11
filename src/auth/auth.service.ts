@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import * as bcryptjs from "bcryptjs";
-import { IndividualUsersService } from 'src/individual-users/individual-users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
@@ -9,8 +8,11 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from "@nestjs/config";
 import * as dotenv from 'dotenv';
+import { UsersService } from 'src/users/users.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
-dotenv.config(); // Carga las variables de entorno desde el archivo .env
+dotenv.config();
 
 const configService = new ConfigService();
 const AWS_S3_BUCKET_NAME = configService.get('AWS_BUCKET');
@@ -26,7 +28,7 @@ AWS.config.update({
 export class AuthService {
 
     constructor(
-        private readonly individualUsersService: IndividualUsersService,
+        private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
         private readonly mailService: MailService,
     ) { }
@@ -47,11 +49,11 @@ export class AuthService {
             Bucket: AWS_S3_BUCKET_NAME,
             Key: `${Date.now().toString()} - ${name}`,
             Body: imageBuffer,
-            ACL: 'public-read', 
-            ContentType: 'image/png', 
+            ACL: 'public-read',
+            ContentType: 'image/png',
         }).promise();
 
-        const existUser = await this.individualUsersService.findOneByEmail(email);
+        const existUser = await this.usersService.findOneByEmail(email);
 
         if (existUser) {
             throw new BadRequestException('Email already exists');
@@ -61,7 +63,7 @@ export class AuthService {
 
         const hashedPassword = await bcryptjs.hash(password, 10);
 
-        const newUser = await this.individualUsersService.create({
+        const newUser = await this.usersService.create({
             photo_url,
             name,
             lastname,
@@ -69,19 +71,25 @@ export class AuthService {
             birthDate,
             email,
             password: hashedPassword,
-            activationToken: token
+            activationToken: token,
+            type: 'individual'
         });
+
+        const user = await this.usersService.findOneByEmail(newUser.email);
+        const payload = { user };
+        const authToken = await this.jwtService.signAsync(payload);
 
         await this.mailService.sendVerificationEmail(email, token);
 
         return {
             message: "User created successfully",
-            user: newUser
+            user: user,
+            token: authToken
         };
     }
 
     async login({ email, password }: LoginDto) {
-        const user = await this.individualUsersService.findOneByEmail(email);
+        const user = await this.usersService.findOneByEmail(email);
 
         if (!user) {
             throw new UnauthorizedException("Invalid email");
@@ -93,24 +101,26 @@ export class AuthService {
             throw new UnauthorizedException("Invalid password");
         }
 
-        const payload = { email: user.email };
+        const payload = { user };
         const token = await this.jwtService.signAsync(payload);
 
         return {
             message: "Login successful",
-            token: token,
-            email: user.email
+            user: {
+                token: token,
+                email: user.email
+            }
         };
     }
 
     async profile({ email }: { email: string }) {
-        return await this.individualUsersService.findOneByEmail(email);
+        return await this.usersService.findOneByEmail(email);
     }
 
     async verifyEmail(verifyEmailDto: VerifyEmailDto) {
         try {
             const { token } = verifyEmailDto;
-            const user = await this.individualUsersService.findOneByToke(token);
+            const user = await this.usersService.findOneByToken(token);
 
             if (!user) {
                 throw new BadRequestException('INVALID_TOKEN');
@@ -122,7 +132,7 @@ export class AuthService {
 
             user.active = true;
             user.activationToken = null;
-            await this.individualUsersService.save(user);
+            await this.usersService.save(user);
             return {
                 message: 'Email del usuario verificado correctamente',
                 user
@@ -139,5 +149,9 @@ export class AuthService {
         const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
         return randomNumber;
+    }
+
+    updateUserProfile(userId: number, updateData: UpdateProfileDto) {
+        return this.usersService.update(userId, updateData);
     }
 }
