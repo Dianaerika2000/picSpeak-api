@@ -1,15 +1,14 @@
 import { Body, Controller, Get, Post, Put, Param, ParseIntPipe } from '@nestjs/common';
-// import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
 import { ConfigurationService } from './configuration.service';
 import { CreateLanguageUserDto } from './dto/create-language-user.dto';
 import { SelectNacionalityUserDto } from './dto/select-nacionality-user.dto';
-// import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
 import { SelectNacionalityMatternLanguageUserDto } from './dto/select-nacionality-mattern-language-user.dto';
 import { CreateInappropriateContentUserDto } from './dto/create-inappropriate-content-user.dto';
 import { CreateInterestUserDto } from './dto/create-interest-user.dto';
 import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language.dto';
-// import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Configuration')
 @Controller('configuration')
 export class ConfigurationController {
     constructor(private configurationService: ConfigurationService) { }
@@ -41,15 +40,17 @@ export class ConfigurationController {
     }
       //Seleccionar inicial de language y nacionality
     @Post('user/:id/language-nacionality')
-    selectLanguageNationalityUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectNacionalityLanguageUser:{ nationality_id: string, language_id:string}) {
-        const language_id = parseInt(newSelectNacionalityLanguageUser.language_id, 10);
-        const nationality_id = parseInt(newSelectNacionalityLanguageUser.nationality_id, 10);
-        //return language_id;
-        //console.log("nationality_id: ",nationality_id);
-        const newSelectNacionalityLanguageUsers = new SelectNacionalityLanguageUserDto();
-        newSelectNacionalityLanguageUsers.language_id = language_id;
-        newSelectNacionalityLanguageUsers.nationality_id = nationality_id;
-        return this.configurationService.selectLanguageNationalityUser(id, newSelectNacionalityLanguageUsers);
+    selectLanguageNationalityUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectNacionalityLanguageUser:SelectNacionalityLanguageUserDto) {
+        
+       
+        // const language_id = parseInt(newSelectNacionalityLanguageUser.language_id, 10);
+        // const nationality_id = parseInt(newSelectNacionalityLanguageUser.nationality_id, 10);
+        // //return language_id;
+        // //console.log("nationality_id: ",nationality_id);
+        // const newSelectNacionalityLanguageUsers = new SelectNacionalityLanguageUserDto();
+        // newSelectNacionalityLanguageUsers.language_id = language_id;
+        // newSelectNacionalityLanguageUsers.nationality_id = nationality_id;
+        return this.configurationService.selectLanguageNationalityUser(id, newSelectNacionalityLanguageUser);
     }
     //*****************USER NACIONALITY************************
     //Selección de una nacionalidad para el usuario

@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { IndividualUsersModule } from './individual-users/individual-users.module';
 import { AuthModule } from './auth/auth.module';
 import { NacionalityModule } from './nacionality/nacionality.module';
 import { LanguageModule } from './language/language.module';
@@ -12,6 +11,7 @@ import { InterestModule } from './interest/interest.module';
 import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
+import { ResourcesModule } from './resources/resources.module';
 
 @Module({
   imports: [
@@ -35,14 +35,14 @@ import { MailModule } from './mail/mail.module';
       inject: [ConfigService],
     }),
     UsersModule,
-    IndividualUsersModule,
     AuthModule,
     NacionalityModule,
     LanguageModule,
     InterestModule,
     InappropriateContentModule,
     ConfigurationModule,
-    MailModule
+    MailModule,
+    ResourcesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

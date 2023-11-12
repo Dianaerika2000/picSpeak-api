@@ -1,35 +1,31 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { LanguageNacionality } from './entities/language_nacionality.entity';
 import { Repository } from 'typeorm';
-// import { CreateLanguageNacionalityDto } from './dto/create-language-nacionality.dto';
 import { LanguageUser } from './entities/language_user.entity';
 import { InterestUser } from './entities/interest_user.entity';
 import { InappropriateContentUser } from './entities/inappropriate_content_user.entity';
 import { CreateLanguageUserDto } from './dto/create-language-user.dto';
-// import { UpdateLanguageUserDto } from './dto/update-language-user.dto';
 import { Language } from 'src/language/entities/language.entity';
 import { SelectNacionalityUserDto } from './dto/select-nacionality-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Nacionality } from 'src/nacionality/entities/nacionality.entity';
-// import { UpdateLanguageNacionalityDto } from './dto/update-language-nacionality.dto';
 import { SelectNacionalityMatternLanguageUserDto } from './dto/select-nacionality-mattern-language-user.dto';
 import { InappropriateContent } from 'src/inappropriate-content/entities/inappropriate-content.entity';
 import { CreateInappropriateContentUserDto } from './dto/create-inappropriate-content-user.dto';
 import { Interest } from 'src/interest/entities/interest.entity';
 import { CreateInterestUserDto } from './dto/create-interest-user.dto';
 import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language.dto';
-// import { SelectNacionalityLanguageUserDto } from './dto/select-nacionality-language-user.dto';
+import { IndividualUser } from 'src/users/entities/individual-user.entity';
 
 @Injectable()
 export class ConfigurationService {
     constructor(
         @InjectRepository(Nacionality) private nacionalityRepository: Repository<Nacionality>,
         @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(IndividualUser) private individualUserRepository: Repository<IndividualUser>,
         @InjectRepository(Language) private languageRepository: Repository<Language>,
         @InjectRepository(InappropriateContent) private inappropriateContentRepository: Repository<InappropriateContent>,
         @InjectRepository(Interest) private interestRepository: Repository<Interest>,
-        // @InjectRepository(LanguageNacionality) private languageNacionalityRepository: Repository<LanguageNacionality>,
         @InjectRepository(LanguageUser) private languageUserRepository: Repository<LanguageUser>,
         @InjectRepository(InterestUser) private interestUserRepository: Repository<InterestUser>,
         @InjectRepository(InappropriateContentUser) private inappropriateContentUserRepository: Repository<InappropriateContentUser>
@@ -190,9 +186,11 @@ export class ConfigurationService {
     }
 
     async selectLanguageNationalityUser(id: number, selectLanguageNationalityUser: SelectNacionalityLanguageUserDto) {
-        const userFound = await this.userRepository.findOne({ where: { id }, relations: ['nacionality'] });
+       
+        const userFound = await this.individualUserRepository.findOne({ where: { id } });
+        
         if (!userFound) {
-            return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
+            return new HttpException('Usuario no encontrada LANGUAGE NATIONALITY', HttpStatus.NOT_FOUND);
         }
 
         const languageFound = await this.languageRepository.findOne({ where: { id: selectLanguageNationalityUser.language_id } });
@@ -208,7 +206,7 @@ export class ConfigurationService {
         const languageUserFound = await this.languageUserRepository.findOne({
             where: { matern_language: true, user: { id } },
         })
-        //  return { message: "lenguaje usuario", data: languageUserFound }
+       
         if (languageUserFound) { //quiere decir que hay un language user con matern language registrado
             //return "ingresa true";
             languageUserFound.status = false;
@@ -265,6 +263,7 @@ export class ConfigurationService {
         })
         return { message: "success", data: interestsFound };
     }
+    
     async createSelectInterestUser(id: number) {
         const promesaIterestUser = [];
         const interests = await this.interestRepository.find();

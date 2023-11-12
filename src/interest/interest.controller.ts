@@ -3,7 +3,9 @@ import { InterestService } from './interest.service';
 import { Interest } from './entities/interest.entity';
 import { CreateInterestDto } from './dto/create-interest.dto';
 import { UpdateInterestDto } from './dto/update-interest.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Interest')
 @Controller('interest')
 export class InterestController {
     constructor(private interestService:InterestService) {}
