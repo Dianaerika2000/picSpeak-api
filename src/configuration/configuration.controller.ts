@@ -42,7 +42,7 @@ export class ConfigurationController {
     @Post('user/:id/language-nacionality')
     selectLanguageNationalityUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectNacionalityLanguageUser:SelectNacionalityLanguageUserDto) {
         
-       
+      // return newSelectNacionalityLanguageUser;
         // const language_id = parseInt(newSelectNacionalityLanguageUser.language_id, 10);
         // const nationality_id = parseInt(newSelectNacionalityLanguageUser.nationality_id, 10);
         // //return language_id;

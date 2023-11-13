@@ -25,16 +25,16 @@ export abstract class User extends BaseEntity {
     deletedAt: Date;
 
     //Relaciones de la configuración del usuario
-    @ManyToOne(() => Nacionality, (nacionality) => nacionality.users)
-    @JoinColumn({ name: 'nacionality_id' })
-    nacionality: Nacionality;
+    // @ManyToOne(() => Nacionality, (nacionality) => nacionality.users)
+    // @JoinColumn({ name: 'nacionality_id' })
+    // nacionality: Nacionality;
 
-    @OneToMany(() => InappropriateContentUser, (inappropriateContentUser) => inappropriateContentUser.user)
-    inappropriateContentUsers: InappropriateContentUser[];
+    // @OneToMany(() => InappropriateContentUser, (inappropriateContentUser) => inappropriateContentUser.user)
+    // inappropriateContentUsers: InappropriateContentUser[];
 
-    @OneToMany(() => InterestUser, (interestUser) => interestUser.user)
-    interestUsers: InterestUser[];
+    // @OneToMany(() => InterestUser, (interestUser) => interestUser.user)
+    // interestUsers: InterestUser[];
 
-    @OneToMany(() => LanguageUser, (languageUser) => languageUser.user)
-    languageUsers: LanguageUser[];
+    // @OneToMany(() => LanguageUser, (languageUser) => languageUser.user)
+    // languageUsers: LanguageUser[];
 }

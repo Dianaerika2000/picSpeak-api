@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Interest } from 'src/interest/entities/interest.entity';
+import { IndividualUser } from 'src/users/entities/individual-user.entity';
 
 @Entity()
 export class InterestUser {
@@ -19,9 +20,12 @@ export class InterestUser {
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.interestUsers)
+    // @ManyToOne(() => User, (user) => user.interestUsers)
+    // @JoinColumn({ name: 'user_id' })
+    // user: User;
+    @ManyToOne(() => IndividualUser, (individualuser) => individualuser.interestUsers)
     @JoinColumn({ name: 'user_id' })
-    user: User;
+    individualuser: IndividualUser;
 
     @ManyToOne(() => Interest, (interest) => interest.interestUsers)
     @JoinColumn({ name: 'interest_id' })

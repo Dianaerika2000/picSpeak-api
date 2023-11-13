@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { InappropriateContent } from 'src/inappropriate-content/entities/inappropriate-content.entity';
+import { IndividualUser } from 'src/users/entities/individual-user.entity';
 
 @Entity()
 export class InappropriateContentUser {
@@ -19,9 +20,9 @@ export class InappropriateContentUser {
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.inappropriateContentUsers)
+    @ManyToOne(() => IndividualUser, (individualuser) => individualuser.inappropriateContentUsers)
     @JoinColumn({ name: 'user_id' })
-    user: User;
+    individualuser: IndividualUser;
 
     @ManyToOne(() => InappropriateContent, (inappropriate_content) => inappropriate_content.inappropriateContentUsers)
     @JoinColumn({ name: 'inappropriate_content_id' })
