@@ -12,6 +12,7 @@ import { InappropriateContentModule } from './inappropriate-content/inappropriat
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
 import { ResourcesModule } from './resources/resources.module';
+import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ResourcesModule } from './resources/resources.module';
     ConfigurationModule,
     MailModule,
     ResourcesModule,
+    ChatGptAiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
