@@ -1,4 +1,4 @@
-import { IndividualUser } from "src/individual-users/entities/individual-user.entity";
+// import { IndividualUser } from "src/individual-users/entities/individual-user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -15,8 +15,8 @@ export class Message {
   @UpdateDateColumn({ name: 'updated_at'})
   updatedAt: Date;
 
-  @ManyToOne(
-    () => IndividualUser, 
-    (user) => user.messages)
-  individualUser: IndividualUser;
+  // @ManyToOne(
+  //   () => IndividualUser, 
+  //   (user) => user.messages)
+  // individualUser: IndividualUser;
 }
