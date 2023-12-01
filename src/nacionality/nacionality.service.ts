@@ -27,6 +27,25 @@ export class NacionalityService {
 
     }
 
+    async createNacionalities(nacionalities: CreateNacionalityDto[]) {
+        const createdNacionalities = [];
+
+        for (const nacionality of nacionalities) {
+            const nacionalityFound = await this.nacionalityRepository.findOne({
+                where: {
+                    name: nacionality.name,
+                },
+            });
+
+            if (!nacionalityFound) {
+                const newNacionality = this.nacionalityRepository.create(nacionality);
+                await this.nacionalityRepository.save(newNacionality);
+                createdNacionalities.push(newNacionality);
+            }
+        }
+        return { message: 'success', data: createdNacionalities };
+    }
+
     async getNacionalities() {
         return { message: 'succes', data: await this.nacionalityRepository.find() };
     }

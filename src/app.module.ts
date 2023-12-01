@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { IndividualUsersModule } from './individual-users/individual-users.module';
 import { AuthModule } from './auth/auth.module';
 import { NacionalityModule } from './nacionality/nacionality.module';
 import { LanguageModule } from './language/language.module';
@@ -12,6 +11,8 @@ import { InterestModule } from './interest/interest.module';
 import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
+import { ResourcesModule } from './resources/resources.module';
+import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
 import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
 import { ContactModule } from './contact/contact.module';
@@ -26,22 +27,22 @@ import { ContactModule } from './contact/contact.module';
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DB_HOST'),
-        // port: configService.get('DB_PORT'),
-        // username: configService.get('DB_USERNAME'),
-        // password: configService.get('DB_PASSWORD'),
-        // database: configService.get('DB_DATABASE'),
-        // url: configService.get('DATABASE_URL'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
         entities: ['dist/src/**/*.entity{.ts,.js}'],
         logging: true,
         autoLoadEntities: true,
         synchronize: true,
         cache: false,
-        ssl: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
     UsersModule,
-    IndividualUsersModule,
     AuthModule,
     NacionalityModule,
     LanguageModule,
@@ -49,6 +50,8 @@ import { ContactModule } from './contact/contact.module';
     InappropriateContentModule,
     ConfigurationModule,
     MailModule,
+    ResourcesModule,
+    ChatGptAiModule,
     ChatModule,
     MessageModule,
     ContactModule

@@ -26,6 +26,25 @@ export class InterestService {
         return { message: 'succes', data: await this.interestRepository.save(newInterest)};
 
     }
+    async createInterests(interests: CreateInterestDto[]) {
+       
+        const createdInterest = [];
+
+        for (const interest of interests) {
+            const interestFound = await this.interestRepository.findOne({
+                where: {
+                    name: interest.name
+                }
+            })
+            if (!interestFound) {
+                const newInterest = this.interestRepository.create(interest);
+                await this.interestRepository.save(newInterest);
+                createdInterest.push(newInterest);
+            }
+        }
+
+        return { message: 'success', data: createdInterest };
+    }
 
     async getInterests() {
         return { message: 'succes', data: await this.interestRepository.find()};

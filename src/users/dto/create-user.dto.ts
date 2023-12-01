@@ -1,6 +1,14 @@
-import { UserType } from "src/enums/user-type.enum";
+import { IsOptional } from "class-validator";
 
 export class CreateUserDto {
-    type: UserType;
-    photo_url?: string;
+    @IsOptional()
+    photo_url: string;
+    name: string;
+    lastname: string;
+    username: string;
+    birthDate: Date;
+    email: string;
+    password: string;
+    activationToken: string;
+    type: string;
 }

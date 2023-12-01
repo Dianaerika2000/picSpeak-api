@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { User } from "src/users/entities/user.entity";
-import { LanguageNacionality } from "../../configuration/entities/language_nacionality.entity";
+import { IndividualUser } from "src/users/entities/individual-user.entity";
 
 @Entity() //convierte inmediatamente a una tabla
 export class Nacionality {
@@ -19,9 +19,8 @@ export class Nacionality {
     @DeleteDateColumn({ name: 'deleted_at'})
     deletedAt: Date;
 
-    @OneToMany(() => User, (user) => user.nacionality)
-    users: User[]
+    @OneToMany(() => IndividualUser, (individualusers) => individualusers.nacionality)
+    individualusers: IndividualUser[]
 
-    @OneToMany(() => LanguageNacionality, (languageNacionalities) => languageNacionalities.nacionality)
-    languageNacionalities: LanguageNacionality[];
+   
 }

@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm'
-import { LanguageNacionality } from 'src/configuration/entities/language_nacionality.entity';
 import { LanguageUser } from '../../configuration/entities/language_user.entity';
 
 @Entity()
@@ -24,9 +23,6 @@ export class Language {
 
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
-
-    @OneToMany(() => LanguageNacionality, (nacionalityLanguages) => nacionalityLanguages.language)
-    nacionalityLanguages: LanguageNacionality[];
 
     @OneToMany(() => LanguageUser, (languageUsers) => languageUsers.language)
     languageUsers: LanguageUser[];

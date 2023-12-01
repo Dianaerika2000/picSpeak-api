@@ -3,7 +3,9 @@ import { CreateNacionalityDto } from './dto/create-nacionality.dto';
 import { NacionalityService } from "./nacionality.service";
 import { Nacionality } from './entities/nacionality.entity';
 import { UpdateNacionalityDto } from './dto/update-nacionality.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Nacionality')
 @Controller('nacionality')
 export class NacionalityController {
 
@@ -11,7 +13,7 @@ export class NacionalityController {
 
 
     @Get()
-    getNacionalities(){
+    getNacionalities() {
         return this.nacionalitiesService.getNacionalities();
     }
 
@@ -20,6 +22,11 @@ export class NacionalityController {
         return this.nacionalitiesService.createNacionality(newNacionality);
     }
 
+    //Registrar una lista de nacioalidades
+    @Post('create')
+    createNacionalities(@Body() newNationalities: CreateNacionalityDto[]) {
+        return this.nacionalitiesService.createNacionalities(newNationalities);
+    }
 
     @Get(':id')
     getNacionality(@Param('id', ParseIntPipe) id: number) {
