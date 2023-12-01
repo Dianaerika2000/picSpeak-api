@@ -1,0 +1,103 @@
+# Details
+
+Date : 2023-12-01 14:42:24
+
+Directory d:\\2-2023\\SOFTWARE 1\\PROYECTO_DE_LA_MATERIA\\PICSPEAK\\nuevo\\picSpeak-api
+
+Total : 88 files,  15843 codes, 91 comments, 528 blanks, all 16462 lines
+
+[Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
+
+## Files
+| filename | language | code | comment | blank | total |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+| [.eslintrc.js](/.eslintrc.js) | JavaScript | 25 | 0 | 1 | 26 |
+| [README.md](/README.md) | Markdown | 61 | 2 | 26 | 89 |
+| [nest-cli.json](/nest-cli.json) | JSON | 11 | 0 | 1 | 12 |
+| [orm.config.ts](/orm.config.ts) | TypeScript | 13 | 2 | 3 | 18 |
+| [package-lock.json](/package-lock.json) | JSON | 13,387 | 0 | 1 | 13,388 |
+| [package.json](/package.json) | JSON | 89 | 6 | 0 | 95 |
+| [src/app.controller.spec.ts](/src/app.controller.spec.ts) | TypeScript | 18 | 0 | 5 | 23 |
+| [src/app.controller.ts](/src/app.controller.ts) | TypeScript | 10 | 0 | 3 | 13 |
+| [src/app.module.ts](/src/app.module.ts) | TypeScript | 51 | 0 | 2 | 53 |
+| [src/app.service.ts](/src/app.service.ts) | TypeScript | 7 | 0 | 2 | 9 |
+| [src/auth/auth.controller.spec.ts](/src/auth/auth.controller.spec.ts) | TypeScript | 14 | 0 | 5 | 19 |
+| [src/auth/auth.controller.ts](/src/auth/auth.controller.ts) | TypeScript | 48 | 0 | 8 | 56 |
+| [src/auth/auth.guard.ts](/src/auth/auth.guard.ts) | TypeScript | 32 | 0 | 7 | 39 |
+| [src/auth/auth.module.ts](/src/auth/auth.module.ts) | TypeScript | 22 | 0 | 2 | 24 |
+| [src/auth/auth.service.spec.ts](/src/auth/auth.service.spec.ts) | TypeScript | 14 | 0 | 5 | 19 |
+| [src/auth/auth.service.ts](/src/auth/auth.service.ts) | TypeScript | 126 | 0 | 32 | 158 |
+| [src/auth/constants/jwt.constant.ts](/src/auth/constants/jwt.constant.ts) | TypeScript | 6 | 1 | 2 | 9 |
+| [src/auth/dto/login.dto.ts](/src/auth/dto/login.dto.ts) | TypeScript | 10 | 0 | 3 | 13 |
+| [src/auth/dto/register.dto.ts](/src/auth/dto/register.dto.ts) | TypeScript | 24 | 0 | 7 | 31 |
+| [src/auth/dto/update-profile.dto.ts](/src/auth/dto/update-profile.dto.ts) | TypeScript | 21 | 0 | 9 | 30 |
+| [src/auth/dto/verify-email.dto.ts](/src/auth/dto/verify-email.dto.ts) | TypeScript | 6 | 0 | 1 | 7 |
+| [src/chat-gpt-ai/chat-gpt-ai.controller.ts](/src/chat-gpt-ai/chat-gpt-ai.controller.ts) | TypeScript | 16 | 0 | 4 | 20 |
+| [src/chat-gpt-ai/chat-gpt-ai.module.ts](/src/chat-gpt-ai/chat-gpt-ai.module.ts) | TypeScript | 8 | 0 | 2 | 10 |
+| [src/chat-gpt-ai/chat-gpt-ai.service.ts](/src/chat-gpt-ai/chat-gpt-ai.service.ts) | TypeScript | 48 | 2 | 12 | 62 |
+| [src/chat-gpt-ai/model/get-ai-model-answe.ts](/src/chat-gpt-ai/model/get-ai-model-answe.ts) | TypeScript | 12 | 0 | 4 | 16 |
+| [src/configuration/configuration.controller.ts](/src/configuration/configuration.controller.ts) | TypeScript | 74 | 27 | 3 | 104 |
+| [src/configuration/configuration.module.ts](/src/configuration/configuration.module.ts) | TypeScript | 19 | 0 | 2 | 21 |
+| [src/configuration/configuration.service.ts](/src/configuration/configuration.service.ts) | TypeScript | 397 | 27 | 55 | 479 |
+| [src/configuration/dto/create-inappropriate-content-user.dto.ts](/src/configuration/dto/create-inappropriate-content-user.dto.ts) | TypeScript | 7 | 0 | 3 | 10 |
+| [src/configuration/dto/create-interest-user.dto.ts](/src/configuration/dto/create-interest-user.dto.ts) | TypeScript | 7 | 0 | 3 | 10 |
+| [src/configuration/dto/create-language-nacionality.dto.ts](/src/configuration/dto/create-language-nacionality.dto.ts) | TypeScript | 5 | 0 | 2 | 7 |
+| [src/configuration/dto/create-language-user.dto.ts](/src/configuration/dto/create-language-user.dto.ts) | TypeScript | 7 | 0 | 3 | 10 |
+| [src/configuration/dto/select-nacionality-language.dto.ts](/src/configuration/dto/select-nacionality-language.dto.ts) | TypeScript | 7 | 0 | 2 | 9 |
+| [src/configuration/dto/select-nacionality-mattern-language-user.dto.ts](/src/configuration/dto/select-nacionality-mattern-language-user.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/configuration/dto/select-nacionality-user.dto.ts](/src/configuration/dto/select-nacionality-user.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/configuration/dto/update-language-nacionality.dto.ts](/src/configuration/dto/update-language-nacionality.dto.ts) | TypeScript | 8 | 0 | 2 | 10 |
+| [src/configuration/dto/update-language-user.dto.ts](/src/configuration/dto/update-language-user.dto.ts) | TypeScript | 11 | 0 | 3 | 14 |
+| [src/configuration/entities/inappropriate_content_user.entity.ts](/src/configuration/entities/inappropriate_content_user.entity.ts) | TypeScript | 23 | 0 | 8 | 31 |
+| [src/configuration/entities/interest_user.entity.ts](/src/configuration/entities/interest_user.entity.ts) | TypeScript | 23 | 3 | 8 | 34 |
+| [src/configuration/entities/language_user.entity.ts](/src/configuration/entities/language_user.entity.ts) | TypeScript | 25 | 3 | 10 | 38 |
+| [src/database/migrations/1695871508589-first_migration.ts](/src/database/migrations/1695871508589-first_migration.ts) | TypeScript | 16 | 0 | 5 | 21 |
+| [src/database/migrations/1696128441341-first_migration.ts](/src/database/migrations/1696128441341-first_migration.ts) | TypeScript | 14 | 0 | 5 | 19 |
+| [src/inappropriate-content/dto/create-inappropriate-content.dto.ts](/src/inappropriate-content/dto/create-inappropriate-content.dto.ts) | TypeScript | 7 | 0 | 2 | 9 |
+| [src/inappropriate-content/dto/update-inappropriate-content.dto.ts](/src/inappropriate-content/dto/update-inappropriate-content.dto.ts) | TypeScript | 7 | 0 | 2 | 9 |
+| [src/inappropriate-content/entities/inappropriate-content.entity.ts](/src/inappropriate-content/entities/inappropriate-content.entity.ts) | TypeScript | 20 | 0 | 7 | 27 |
+| [src/inappropriate-content/inappropriate-content.controller.ts](/src/inappropriate-content/inappropriate-content.controller.ts) | TypeScript | 35 | 0 | 9 | 44 |
+| [src/inappropriate-content/inappropriate-content.module.ts](/src/inappropriate-content/inappropriate-content.module.ts) | TypeScript | 11 | 0 | 2 | 13 |
+| [src/inappropriate-content/inappropriate-content.service.ts](/src/inappropriate-content/inappropriate-content.service.ts) | TypeScript | 65 | 0 | 13 | 78 |
+| [src/interest/dto/create-interest.dto.ts](/src/interest/dto/create-interest.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/interest/dto/update-interest.dto.ts](/src/interest/dto/update-interest.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/interest/entities/interest.entity.ts](/src/interest/entities/interest.entity.ts) | TypeScript | 19 | 0 | 7 | 26 |
+| [src/interest/interest.controller.ts](/src/interest/interest.controller.ts) | TypeScript | 35 | 0 | 7 | 42 |
+| [src/interest/interest.module.ts](/src/interest/interest.module.ts) | TypeScript | 11 | 0 | 2 | 13 |
+| [src/interest/interest.service.ts](/src/interest/interest.service.ts) | TypeScript | 65 | 0 | 14 | 79 |
+| [src/language/dto/create-language.dto.ts](/src/language/dto/create-language.dto.ts) | TypeScript | 11 | 0 | 3 | 14 |
+| [src/language/dto/update-language.dto.ts](/src/language/dto/update-language.dto.ts) | TypeScript | 12 | 0 | 3 | 15 |
+| [src/language/entities/language.entity.ts](/src/language/entities/language.entity.ts) | TypeScript | 21 | 0 | 8 | 29 |
+| [src/language/language.controller.ts](/src/language/language.controller.ts) | TypeScript | 35 | 1 | 9 | 45 |
+| [src/language/language.module.ts](/src/language/language.module.ts) | TypeScript | 11 | 0 | 2 | 13 |
+| [src/language/language.service.ts](/src/language/language.service.ts) | TypeScript | 65 | 0 | 17 | 82 |
+| [src/mail/mail.controller.ts](/src/mail/mail.controller.ts) | TypeScript | 11 | 0 | 4 | 15 |
+| [src/mail/mail.module.ts](/src/mail/mail.module.ts) | TypeScript | 38 | 0 | 2 | 40 |
+| [src/mail/mail.service.ts](/src/mail/mail.service.ts) | TypeScript | 19 | 0 | 3 | 22 |
+| [src/mail/templates/confirmation.hbs](/src/mail/templates/confirmation.hbs) | Handlebars | 6 | 0 | 0 | 6 |
+| [src/main.ts](/src/main.ts) | TypeScript | 23 | 0 | 5 | 28 |
+| [src/nacionality/dto/create-nacionality.dto.ts](/src/nacionality/dto/create-nacionality.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/nacionality/dto/update-nacionality.dto.ts](/src/nacionality/dto/update-nacionality.dto.ts) | TypeScript | 5 | 0 | 1 | 6 |
+| [src/nacionality/entities/nacionality.entity.ts](/src/nacionality/entities/nacionality.entity.ts) | TypeScript | 18 | 0 | 9 | 27 |
+| [src/nacionality/nacionality.controller.ts](/src/nacionality/nacionality.controller.ts) | TypeScript | 35 | 1 | 9 | 45 |
+| [src/nacionality/nacionality.module.ts](/src/nacionality/nacionality.module.ts) | TypeScript | 12 | 0 | 2 | 14 |
+| [src/nacionality/nacionality.service.ts](/src/nacionality/nacionality.service.ts) | TypeScript | 65 | 1 | 13 | 79 |
+| [src/resources/dto/create-resource.dto.ts](/src/resources/dto/create-resource.dto.ts) | TypeScript | 10 | 0 | 4 | 14 |
+| [src/resources/entities/image.entity.ts](/src/resources/entities/image.entity.ts) | TypeScript | 13 | 0 | 5 | 18 |
+| [src/resources/entities/resource.entity.ts](/src/resources/entities/resource.entity.ts) | TypeScript | 14 | 0 | 6 | 20 |
+| [src/resources/resources.controller.ts](/src/resources/resources.controller.ts) | TypeScript | 37 | 0 | 7 | 44 |
+| [src/resources/resources.module.ts](/src/resources/resources.module.ts) | TypeScript | 12 | 0 | 2 | 14 |
+| [src/resources/resources.service.ts](/src/resources/resources.service.ts) | TypeScript | 84 | 1 | 17 | 102 |
+| [src/users/dto/create-user.dto.ts](/src/users/dto/create-user.dto.ts) | TypeScript | 13 | 0 | 2 | 15 |
+| [src/users/dto/update-user.dto.ts](/src/users/dto/update-user.dto.ts) | TypeScript | 6 | 0 | 2 | 8 |
+| [src/users/entities/individual-user.entity.ts](/src/users/entities/individual-user.entity.ts) | TypeScript | 40 | 1 | 17 | 58 |
+| [src/users/entities/user.entity.ts](/src/users/entities/user.entity.ts) | TypeScript | 20 | 10 | 11 | 41 |
+| [src/users/users.controller.ts](/src/users/users.controller.ts) | TypeScript | 31 | 0 | 7 | 38 |
+| [src/users/users.module.ts](/src/users/users.module.ts) | TypeScript | 13 | 0 | 2 | 15 |
+| [src/users/users.service.ts](/src/users/users.service.ts) | TypeScript | 88 | 1 | 18 | 107 |
+| [test/app.e2e-spec.ts](/test/app.e2e-spec.ts) | TypeScript | 20 | 0 | 5 | 25 |
+| [test/jest-e2e.json](/test/jest-e2e.json) | JSON | 9 | 0 | 1 | 10 |
+| [tsconfig.build.json](/tsconfig.build.json) | JSON | 3 | 2 | 0 | 5 |
+| [tsconfig.json](/tsconfig.json) | JSON with Comments | 21 | 0 | 1 | 22 |
+
+[Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
