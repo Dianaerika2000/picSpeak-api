@@ -6,6 +6,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.setGlobalPrefix('api/v1');
+  app.enableCors();
+
   const options = new DocumentBuilder()
     .setTitle('PicSpeak API')
     .setDescription('PicSpeak API')
