@@ -1,5 +1,6 @@
+import { Message } from "src/message/entities/message.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class IndividualUser {
@@ -45,4 +46,11 @@ export class IndividualUser {
     @OneToOne(() => User, user => user.individual, { cascade: true })
     @JoinColumn({ name: 'user_id'})
     user: User; 
+
+    @OneToMany(
+      () => Message, 
+      message => message.individualUser,
+      { cascade: true }
+    )
+    messages?: Message[];
 }

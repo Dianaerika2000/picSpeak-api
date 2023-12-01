@@ -12,6 +12,9 @@ import { InterestModule } from './interest/interest.module';
 import { InappropriateContentModule } from './inappropriate-content/inappropriate-content.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
+import { ChatModule } from './chat/chat.module';
+import { MessageModule } from './message/message.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -23,14 +26,17 @@ import { MailModule } from './mail/mail.module';
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        // port: configService.get('DB_PORT'),
+        // username: configService.get('DB_USERNAME'),
+        // password: configService.get('DB_PASSWORD'),
+        // database: configService.get('DB_DATABASE'),
+        // url: configService.get('DATABASE_URL'),
+        entities: ['dist/src/**/*.entity{.ts,.js}'],
         logging: true,
         autoLoadEntities: true,
         synchronize: true,
-        cache: false
+        cache: false,
+        ssl: true,
       }),
       inject: [ConfigService],
     }),
@@ -42,7 +48,10 @@ import { MailModule } from './mail/mail.module';
     InterestModule,
     InappropriateContentModule,
     ConfigurationModule,
-    MailModule
+    MailModule,
+    ChatModule,
+    MessageModule,
+    ContactModule
   ],
   controllers: [AppController],
   providers: [AppService],
