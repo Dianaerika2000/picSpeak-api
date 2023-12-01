@@ -13,6 +13,9 @@ import { ConfigurationModule } from './configuration/configuration.module';
 import { MailModule } from './mail/mail.module';
 import { ResourcesModule } from './resources/resources.module';
 import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
+import { ChatModule } from './chat/chat.module';
+import { MessageModule } from './message/message.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -28,10 +31,14 @@ import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
+        entities: ['dist/src/**/*.entity{.ts,.js}'],
         logging: true,
         autoLoadEntities: true,
         synchronize: true,
-        cache: false
+        cache: false,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
@@ -45,6 +52,9 @@ import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
     MailModule,
     ResourcesModule,
     ChatGptAiModule,
+    ChatModule,
+    MessageModule,
+    ContactModule
   ],
   controllers: [AppController],
   providers: [AppService],
