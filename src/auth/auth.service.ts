@@ -5,24 +5,11 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { VerifyEmailDto } from './dto/verify-email.dto';
-import * as AWS from 'aws-sdk';
 import { ConfigService } from "@nestjs/config";
-import * as dotenv from 'dotenv';
 import { UsersService } from 'src/users/users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
-
-dotenv.config();
-
-const configService = new ConfigService();
-const AWS_S3_BUCKET_NAME = configService.get('AWS_BUCKET');
-const s3 = new AWS.S3();
-
-AWS.config.update({
-    accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-    secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-    region: configService.get('AWS_DEFAULT_REGION')
-});
+import { AwsService } from '../aws/aws.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +18,7 @@ export class AuthService {
         private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
         private readonly mailService: MailService,
+        private readonly awsService: AwsService,
     ) { }
 
     async register({
@@ -45,31 +33,25 @@ export class AuthService {
         const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
         const imageBuffer = Buffer.from(base64Image, 'base64');
 
-        await s3.upload({
-            Bucket: AWS_S3_BUCKET_NAME,
-            Key: `${Date.now().toString()} - ${name}`,
-            Body: imageBuffer,
-            ACL: 'public-read',
-            ContentType: 'image/png',
-        }).promise();
-
         const existUser = await this.usersService.findOneByEmail(email);
-
+        
         if (existUser) {
             throw new BadRequestException('Email already exists');
         }
-
+        
         const token = this.generateRandomNumber().toString();
+        
+        const { profilePhotoUrl } = await this.awsService.uploadProfilePhotoToS3(imageBuffer, token);
 
         const hashedPassword = await bcryptjs.hash(password, 10);
 
         const newUser = await this.usersService.create({
-            photo_url,
             name,
             lastname,
             username,
             birthDate,
             email,
+            photo_url: profilePhotoUrl,
             password: hashedPassword,
             activationToken: token,
             type: 'individual'

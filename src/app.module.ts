@@ -16,6 +16,7 @@ import { ChatGptAiModule } from './chat-gpt-ai/chat-gpt-ai.module';
 import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
 import { ContactModule } from './contact/contact.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { ContactModule } from './contact/contact.module';
     ChatGptAiModule,
     ChatModule,
     MessageModule,
-    ContactModule
+    ContactModule,
+    AwsModule
   ],
   controllers: [AppController],
   providers: [AppService],
