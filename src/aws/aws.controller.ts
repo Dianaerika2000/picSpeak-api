@@ -1,6 +1,7 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AwsService } from './aws.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('aws')
 export class AwsController {
@@ -13,4 +14,18 @@ export class AwsController {
     ) {
     return this.awsService.uploadProfilePhotoToS3(photo.buffer);
   }
+
+  @Post('verify-content')
+  @UseInterceptors(FileInterceptor('image'))
+  async verifyContent(@UploadedFile() image, @Res() res) {
+    try {
+      const result = await this.awsService.getLabelFromRekognition(image);
+      return res.send({ result });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ error: error.message });
+    }
+  }
+
+
 }
