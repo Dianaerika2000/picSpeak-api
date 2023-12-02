@@ -24,7 +24,7 @@ async function bootstrap() {
   //   transform: true,
   // }));
 
-  await app.listen(3000,'192.168.0.18');
+  await app.listen(3000);
  // await app.listen(process.env.PORT || 3000, "0.0.0.0");
 }
 bootstrap();
