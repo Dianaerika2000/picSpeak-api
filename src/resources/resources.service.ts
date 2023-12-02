@@ -4,29 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Resource } from './entities/resource.entity';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
-import * as AWS from 'aws-sdk';
-import { ConfigService } from "@nestjs/config";
-import * as dotenv from 'dotenv';
-
-dotenv.config();
-const configService = new ConfigService();
-const AWS_S3_BUCKET_NAME = configService.get('AWS_BUCKET');
-const AWS_ACCESS_KEY_ID = configService.get('AWS_ACCESS_KEY_ID');
-const AWS_SECRET_ACCESS_KEY = configService.get('AWS_SECRET_ACCESS_KEY');
-const AWS_DEFAULT_REGION = configService.get('AWS_DEFAULT_REGION');
-const s3 = new AWS.S3();
-
-AWS.config.update({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  region: AWS_DEFAULT_REGION
-});
+import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
 export class ResourcesService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
+    private readonly awsService: AwsService,
   ) { }
 
   async create(createResourceDto: CreateResourceDto) {
@@ -36,18 +21,15 @@ export class ResourcesService {
       const base64Image = createResourceDto.pathDevice.replace(/^data:image\/[a-z]+;base64,/, '');
       const imageBuffer = Buffer.from(base64Image, 'base64');
 
-      const uploadImage = await s3.upload({
-        Bucket: AWS_S3_BUCKET_NAME,
-        Key: `${Date.now().toString()} - ${createResourceDto.pathDevice}`,
-        Body: imageBuffer,
-        ACL: 'public-read',
-        ContentType: 'image/png',
-      }).promise();
+      const key = `${Date.now().toString()} - ${createResourceDto.pathDevice}`;
+      const uploadImage = await this.awsService.uploadImageToS3(imageBuffer, key);
+
+      const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
 
       resource = new Image();
       resource.pathDevice = createResourceDto.pathDevice;
-      resource.url = uploadImage.Location;
-      resource.content = await this.getLabelFromRekognition(imageBuffer);
+      resource.url = uploadImage.photoUrl;
+      resource.content = labels.toString();
     } else if (createResourceDto.type == 'T') {
       //TODO: Make code for save message type text
     }
@@ -70,32 +52,5 @@ export class ResourcesService {
       throw new NotFoundException(`Resource with ID ${id} not found`);   
     }
     return this.resourceRepository.remove(resourceToRemove);
-  }
-
-  async getLabelFromRekognition(image: any) {
-    if (!image) {
-      throw new Error('Image is missing.');
-    }
-
-    const rekognition = new AWS.Rekognition({
-      accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-      region: configService.get('AWS_DEFAULT_REGION'),
-    });
-
-    const params = {
-      Image: {
-        Bytes: image.buffer,
-      },
-    };
-
-    try {
-      const response = await rekognition.detectModerationLabels(params).promise();
-      const resultLabels = response.ModerationLabels[0].Name;
-      return resultLabels;
-    } catch (error) {
-      console.error(error);
-      throw new Error('Error detecting moderation labels.');
-    }
   }
 }

@@ -18,6 +18,7 @@ import { MessageModule } from './message/message.module';
 import { ContactModule } from './contact/contact.module';
 import { StatusModule } from './status/status.module';
 import { StatusIndividualUserModule } from './status-individual-user/status-individual-user.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { StatusIndividualUserModule } from './status-individual-user/status-indi
     MessageModule,
     ContactModule,
     StatusModule,
-    StatusIndividualUserModule
+    StatusIndividualUserModule,
+    AwsModule
   ],
   controllers: [AppController],
   providers: [AppService],
