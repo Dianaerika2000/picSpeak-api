@@ -1,4 +1,11 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateStatusDto } from './create-status.dto';
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 
-export class UpdateStatusDto extends PartialType(CreateStatusDto) {}
+export class UpdateStatusDto {
+    @IsString()
+    status_info: string;
+
+    @IsOptional()
+    @IsString()
+    icon?: string;
+}

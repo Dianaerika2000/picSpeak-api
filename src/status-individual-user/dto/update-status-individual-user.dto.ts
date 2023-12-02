@@ -1,4 +1,14 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateStatusIndividualUserDto } from './create-status-individual-user.dto';
+import { bool } from "aws-sdk/clients/signer";
+import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
-export class UpdateStatusIndividualUserDto extends PartialType(CreateStatusIndividualUserDto) {}
+export class UpdateStatusIndividualUserDto {
+    @IsString()
+    status_info: string;
+
+    @IsOptional()
+    @IsString()
+    icon?: string;
+
+    @IsNumber()
+    user_id: number;
+}

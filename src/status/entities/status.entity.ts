@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
+import { IndividualUser } from 'src/users/entities/individual-user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm'
 
 @Entity()
 export class Status {
@@ -6,9 +7,9 @@ export class Status {
     id: number;
 
     @Column({ name: 'status_info', nullable: false })
-    statusInfo: string;
+    status_info: string;
 
-    @Column({ name: 'icon', nullable: true })
+    @Column({ nullable: true })
     icon: string;
 
     @CreateDateColumn({ name: 'created_at' })
@@ -19,5 +20,6 @@ export class Status {
 
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
+
 
 }
