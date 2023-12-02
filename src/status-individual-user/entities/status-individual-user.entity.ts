@@ -1,4 +1,4 @@
-import { bool } from 'aws-sdk/clients/signer';
+
 import { IndividualUser } from 'src/users/entities/individual-user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm'
 
@@ -14,7 +14,7 @@ export class StatusIndividualUser {
     icon: string;
 
     @Column({ name: 'status', default: true })
-    status: bool;
+    status: Boolean;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

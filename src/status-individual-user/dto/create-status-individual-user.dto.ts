@@ -1,4 +1,3 @@
-import { bool } from "aws-sdk/clients/signer";
 import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateStatusIndividualUserDto {
