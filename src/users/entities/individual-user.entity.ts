@@ -4,6 +4,7 @@ import { Nacionality } from "src/nacionality/entities/nacionality.entity";
 import { InappropriateContentUser } from "src/configuration/entities/inappropriate_content_user.entity";
 import { InterestUser } from "src/configuration/entities/interest_user.entity";
 import { LanguageUser } from "src/configuration/entities/language_user.entity";
+import { StatusIndividualUser } from "src/status-individual-user/entities/status-individual-user.entity";
 
 @Entity('individualUsers')
 export class IndividualUser extends User {
@@ -54,4 +55,7 @@ export class IndividualUser extends User {
 
     @OneToMany(() => LanguageUser, (languageUser) => languageUser.individualuser)
     languageUsers: LanguageUser[];
+
+    @OneToMany(() => StatusIndividualUser, (statusIndividualUser) => statusIndividualUser.individualuser)
+    statusIndividualUser: StatusIndividualUser[];
 }
