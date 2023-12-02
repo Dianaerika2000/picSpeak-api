@@ -29,15 +29,15 @@ export class ResourcesController {
     return this.resourcesService.remove(+id);
   }
 
-  @Post('verify-content')
-  @UseInterceptors(FileInterceptor('image'))
-  async verifyContent(@UploadedFile() image, @Res() res) {
-    try {
-      const result = await this.resourcesService.getLabelFromRekognition(image);
-      return res.send({ result });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ error: error.message });
-    }
-  }
+  // @Post('verify-content')
+  // @UseInterceptors(FileInterceptor('image'))
+  // async verifyContent(@UploadedFile() image, @Res() res) {
+  //   try {
+  //     const result = await this.resourcesService.getLabelFromRekognition(image);
+  //     return res.send({ result });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).send({ error: error.message });
+  //   }
+  // }
 }

@@ -8,7 +8,7 @@ import { AwsModule } from 'src/aws/aws.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Resource]),
-    AwsModule,
+    AwsModule
   ],
   controllers: [ResourcesController],
   providers: [ResourcesService],
