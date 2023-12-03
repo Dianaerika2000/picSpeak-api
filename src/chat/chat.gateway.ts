@@ -68,7 +68,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       //Enviar los mensajes
       client.emit('messages', messages);
-    }
+    } 
   }
 
   @SubscribeMessage('sendMessage')

@@ -23,7 +23,6 @@ export class ResourcesService {
   ) { }
 
   async create(createResourceDto: CreateResourceDto) {
-    let resource;
 
     if (createResourceDto.type == 'I') {
       const base64Image = createResourceDto.pathDevice.replace(/^data:image\/[a-z]+;base64,/, '');
@@ -34,10 +33,9 @@ export class ResourcesService {
 
       const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
 
-      /* resource = new Image();
-      resource.pathDevice = createResourceDto.pathDevice;
-      resource.url = uploadImage.photoUrl;
-      resource.content = labels.toString(); */
+      /**
+       * El frontend se encarga de filtrar, si mostrar o no
+       */
 
       return this.imageRepository.create({
         pathDevice: uploadImage.photoUrl,
@@ -45,7 +43,8 @@ export class ResourcesService {
         content: labels.toString(),
       });
     } else if (createResourceDto.type == 'T') {
-      //TODO: Make code for save message type text
+      //TODO: Make code for save message type text, the target_language se envia desde el front
+      
       /* const translateText = await this.chatGptAiService.getModelAnswer({
         question: createResourceDto.textOrigin,
         origin_language: createResourceDto.languageOrigin,

@@ -66,22 +66,12 @@ export class ChatService {
      * @returns 
      */
     async getMessagesByChatId(chatId: number): Promise<any[]> {
-        /* const chat = await this.chatRepository.findOne({ where: { id: chatId }, relations: ['message'] });
-
-        if (!chat) {
-            throw new Error('Chat no encontrado');
-        }
-
-        return chat.messages; */
-
         const query = `
-    SELECT * 
-    FROM
-    public.message ms
-    LEFT JOIN public.text tx on tx."messageId" = ms."id"
-	LEFT JOIN public.image im on im."messageId" = ms."id"
-    WHERE "chatId" = $1
-    `;
+            SELECT * FROM public.message ms
+            LEFT JOIN public.text tx on tx."messageId" = ms."id"
+	        LEFT JOIN public.image im on im."messageId" = ms."id"
+            WHERE "chatId" = $1
+        `;
 
         const results = await this.chatRepository.query(query, [chatId]);
 
@@ -101,5 +91,14 @@ export class ChatService {
         console.log('CHAT SERVICE', createMessageDto)
         return await this.messageService.createMessage(createMessageDto);
     }
+
+    async getAllChatsForUser(userId: number): Promise<Chat[]> {
+        return this.chatRepository
+          .createQueryBuilder('chat')
+          .leftJoinAndSelect('chat.senderUserId', 'senderUser')
+          .leftJoinAndSelect('chat.receivingUser', 'receivingUser')
+          .where('senderUser.id = :userId OR receivingUser.id = :userId', { userId })
+          .getMany();
+      }
 }
 
