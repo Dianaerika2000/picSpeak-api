@@ -20,34 +20,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('Cliente desconectado: ', client.id);
   }
 
-  /* @SubscribeMessage('join')
-  async joinRoom(client: Socket, room: string) {
-    console.log('room: ', room)
-    client.join(room);
-  }  */
-
-  /* @SubscribeMessage('join')
-  async joinRoom(client: Socket, payload: { chat: string, senderUserId: number, receivingUserId: number, fondo: string }) {
-    const { chat, senderUserId, receivingUserId, fondo } = payload;
-
-    // Check if the chat already exists or create a new one
-    const existingChat = await this.chatService.findExistingChat(senderUserId, receivingUserId);
-
-    if (existingChat) {
-      client.join(existingChat.id.toString());
-    } else {
-      // Create and save the chat
-      const chat = await this.chatService.createChat(senderUserId, receivingUserId, fondo);
-
-      // Optionally, you can emit an event or perform actions related to the created chat
-      this.server.to(`user_${senderUserId}`).emit('chatCreated', chat);
-      this.server.to(`user_${receivingUserId}`).emit('chatCreated', chat);
-
-      // Join the chat chat
-      client.join(chat.id.toString());
-    }
-  }  */
-
   /**
    * CHAT YA CREADO
    * @param client 
@@ -68,7 +40,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       //Enviar los mensajes
       client.emit('messages', messages);
-    } 
+      // Optionally, you can emit an event or perform actions related to the joined chat
+      this.server.to(existingChat.id.toString()).emit('userJoined', { userId: senderUserId, action: 'joined' });
+    }
   }
 
   @SubscribeMessage('sendMessage')
@@ -80,7 +54,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const messageSend = await this.chatService.sendMessage(message);
 
     this.server.to(chat).emit('message', messageSend);
-    client.emit('message', messageSend)
   }
 
   @SubscribeMessage('typing')
