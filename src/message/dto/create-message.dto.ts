@@ -5,7 +5,7 @@ import { CreateResourceDto } from "src/resources/dto/create-resource.dto";
 export class CreateMessageDto {
     @IsNotEmpty()
     @IsString()
-    status: string;
+    userId: number;
 
     @IsNotEmpty()
     @IsString()

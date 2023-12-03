@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { Chat } from 'src/message/entities/chat.entity';
 import { Message } from 'src/message/entities/message.entity';
 import { MessageService } from 'src/message/message.service';
@@ -14,6 +15,7 @@ export class ChatService {
         @InjectRepository(Chat)
         private readonly chatRepository: Repository<Chat>,
         private readonly userService: UsersService,
+        private readonly messageService: MessageService,
     ) { }
 
     /**
@@ -63,14 +65,27 @@ export class ChatService {
      * @param chatId 
      * @returns 
      */
-    async getMessagesByChatId(chatId: number): Promise<Message[]> {
-        const chat = await this.chatRepository.findOne({ where: { id: chatId }, relations: ['messages'] });
+    async getMessagesByChatId(chatId: number): Promise<any[]> {
+        /* const chat = await this.chatRepository.findOne({ where: { id: chatId }, relations: ['message'] });
 
         if (!chat) {
             throw new Error('Chat no encontrado');
         }
 
-        return chat.messages;
+        return chat.messages; */
+
+        const query = `
+    SELECT * 
+    FROM
+    public.message ms
+    LEFT JOIN public.text tx on tx."messageId" = ms."id"
+	LEFT JOIN public.image im on im."messageId" = ms."id"
+    WHERE "chatId" = $1
+    `;
+
+        const results = await this.chatRepository.query(query, [chatId]);
+
+        return results;
     }
 
     async findExistingChat(senderUserId: number, receivingUserId: number): Promise<Chat | undefined> {
@@ -81,4 +96,9 @@ export class ChatService {
             .where('(senderUser.id = :senderUserId AND receivingUser.id = :receivingUserId) OR (senderUser.id = :receivingUserId AND receivingUser.id = :senderUserId)', { senderUserId, receivingUserId })
             .getOne();
     }
+
+    async sendMessage(createMessageDto: CreateMessageDto) {
+        return this.messageService.createMessage(createMessageDto);
+    }
 }
+

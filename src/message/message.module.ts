@@ -6,12 +6,12 @@ import { Message } from './entities/message.entity';
 import { UsersModule } from 'src/users/users.module';
 import { ChatModule } from 'src/chat/chat.module';
 import { ResourcesModule } from 'src/resources/resources.module';
+import { Chat } from './entities/chat.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message]),
+    TypeOrmModule.forFeature([Message, Chat]),
     UsersModule,
-    ChatModule,
     ResourcesModule
   ],
   controllers: [MessageController],

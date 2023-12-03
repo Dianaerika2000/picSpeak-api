@@ -34,10 +34,16 @@ export class ResourcesService {
 
       const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
 
-      resource = new Image();
+      /* resource = new Image();
       resource.pathDevice = createResourceDto.pathDevice;
       resource.url = uploadImage.photoUrl;
-      resource.content = labels.toString();
+      resource.content = labels.toString(); */
+
+      return this.imageRepository.create({
+        pathDevice: uploadImage.photoUrl,
+        url: uploadImage.photoUrl,
+        content: labels.toString(),
+      });
     } else if (createResourceDto.type == 'T') {
       //TODO: Make code for save message type text
       const translateText = await this.chatGptAiService.getModelAnswer({

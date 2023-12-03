@@ -1,13 +1,15 @@
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
+import { CreateResourceDto } from 'src/resources/dto/create-resource.dto';
+import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   constructor(
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
   ) { }
 
   handleConnection(client: Socket, ...args: any[]) {
@@ -60,22 +62,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (existingChat) {
       //Traer las conversaciones
-      const messages = this.chatService.getMessagesByChatId(existingChat.id);
+      const messages = await this.chatService.getMessagesByChatId(existingChat.id);
+      console.log('MESSAGES', messages)
       client.join(existingChat.id.toString());
 
       //Enviar los mensajes
       client.emit('messages', messages);
-    } 
-  } 
+    }
+  }
 
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, payload: { room: string, message: string }) {
-    const { room, message } = payload;
-    console.log('message: ', message);
+  async sendMessage(client: Socket, payload: { chat: string, userId: number, resource: CreateMessageDto }) {
+    const { chat, userId, resource } = payload;
+    console.log('message: ', resource);
 
-    const senderUserId = client.id;
+    //Existe el chat: llamar al crear mensaje
+    const message = await this.chatService.sendMessage(resource);
 
-    this.server.to(room).emit('message', message);
+    this.server.to(chat).emit('message', message);
   }
 
   @SubscribeMessage('typing')
