@@ -10,7 +10,7 @@ import { ChatGptAiModule } from 'src/chat-gpt-ai/chat-gpt-ai.module';
   imports: [
     TypeOrmModule.forFeature([Resource]),
     AwsModule,
-    ChatGptAiModule
+    ChatGptAiModule,
   ],
   controllers: [ResourcesController],
   providers: [ResourcesService],

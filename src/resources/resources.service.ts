@@ -15,7 +15,6 @@ export class ResourcesService {
     private readonly resourceRepository: Repository<Resource>,
     private readonly awsService: AwsService,
     private readonly chatGptAiService: ChatGptAiService,
-    private readonly messageService: MessageService,
   ) { }
 
   async create(createResourceDto: CreateResourceDto) {
