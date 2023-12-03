@@ -98,7 +98,8 @@ export class ChatService {
     }
 
     async sendMessage(createMessageDto: CreateMessageDto) {
-        return this.messageService.createMessage(createMessageDto);
+        console.log('CHAT SERVICE', createMessageDto)
+        return await this.messageService.createMessage(createMessageDto);
     }
 }
 

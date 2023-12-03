@@ -46,17 +46,18 @@ export class ResourcesService {
       });
     } else if (createResourceDto.type == 'T') {
       //TODO: Make code for save message type text
-      const translateText = await this.chatGptAiService.getModelAnswer({
+      /* const translateText = await this.chatGptAiService.getModelAnswer({
         question: createResourceDto.textOrigin,
         origin_language: createResourceDto.languageOrigin,
         target_language: createResourceDto.languageTarget
       });
 
-      console.log('response GPT', translateText);
+      console.log('response GPT', translateText); */
 
       return this.textRepository.create({
         textOrigin: createResourceDto.textOrigin,
-        textTranslate: translateText[0].text,
+        //textTranslate: translateText[0].text,
+        textTranslate: 'inapropiado',
       });
     }
   }
