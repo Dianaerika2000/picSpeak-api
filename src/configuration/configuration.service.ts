@@ -89,7 +89,7 @@ export class ConfigurationService {
         const promesaObtencion = [];
         const languageUserFound = await this.languageUserRepository.find({
             where: {
-                matern_language:false,
+                matern_language: false,
                 status: true,
                 individualuser: { id }
             }
@@ -102,28 +102,28 @@ export class ConfigurationService {
 
         const promesasDeActualizacion = [];
         for (const e of languageUser) {
-          
+
             const language = await this.languageRepository.findOne({ where: { name: e } });
-          
+
             if (language) {
                 const registroEncontrado = await this.languageUserRepository.findOne({
                     where: { individualuser: { id }, language: { id: language.id } },
                 });
-                
+
                 if (registroEncontrado) {
                     // Actualizar los campos con los valores del objeto
                     registroEncontrado.status = true;
                     // Guardar la promesa de actualización en el array
                     promesasDeActualizacion.push(this.languageUserRepository.save(registroEncontrado));
-                }else{
+                } else {
                     const nuevoRegistro = this.languageUserRepository.create({
                         individualuser: { id }, // Asigna el usuario al nuevo registro
                         language: language, // Asigna el interés al nuevo registro
                         status: true, // Configura el estado a true
-                      });
-                  
-                      // Guardar la promesa de creación en el array
-                      promesasDeActualizacion.push(this.languageUserRepository.save(nuevoRegistro));
+                    });
+
+                    // Guardar la promesa de creación en el array
+                    promesasDeActualizacion.push(this.languageUserRepository.save(nuevoRegistro));
                 }
             }
         }
@@ -186,9 +186,9 @@ export class ConfigurationService {
     }
 
     async selectLanguageNationalityUser(id: number, selectLanguageNationalityUser: SelectNacionalityLanguageUserDto) {
-       
+
         const userFound = await this.individualUserRepository.findOne({ where: { id } });
-        
+
         if (!userFound) {
             return new HttpException('Usuario no encontrada LANGUAGE NATIONALITY', HttpStatus.NOT_FOUND);
         }
@@ -206,7 +206,7 @@ export class ConfigurationService {
         const languageUserFound = await this.languageUserRepository.findOne({
             where: { matern_language: true, individualuser: { id } },
         })
-       
+
         if (languageUserFound) { //quiere decir que hay un language user con matern language registrado
             //return "ingresa true";
             languageUserFound.status = false;
@@ -236,7 +236,7 @@ export class ConfigurationService {
                 return { message: "success", data: [await this.languageUserRepository.save(newMatternLanguageUser), await this.individualUserRepository.save(userFound)] };
             }
         } else {// quiere decir que no hay y entonces crearemos uno
-            
+
             userFound.nacionality = nacionalityFound;
             const newLanguageUser = this.languageUserRepository.create({
                 status: true,
@@ -262,7 +262,7 @@ export class ConfigurationService {
         })
         return { message: "success", data: interestsFound };
     }
-    
+
     async createSelectInterestUser(id: number) {
         const promesaIterestUser = [];
         const interests = await this.interestRepository.find();
@@ -333,28 +333,28 @@ export class ConfigurationService {
         const promesasDeActualizacion = [];
 
         for (const e of interestUser) {
-          
+
             const interest = await this.interestRepository.findOne({ where: { name: e } });
-          
+
             if (interest) {
                 const registroEncontrado = await this.interestUserRepository.findOne({
                     where: { individualuser: { id }, interest: { id: interest.id } },
                 });
-                
+
                 if (registroEncontrado) {
                     // Actualizar los campos con los valores del objeto
                     registroEncontrado.status = true;
                     // Guardar la promesa de actualización en el array
                     promesasDeActualizacion.push(this.interestUserRepository.save(registroEncontrado));
-                }else{
+                } else {
                     const nuevoRegistro = this.interestUserRepository.create({
                         individualuser: { id }, // Asigna el usuario al nuevo registro
                         interest: interest, // Asigna el interés al nuevo registro
                         status: true, // Configura el estado a true
-                      });
-                  
-                      // Guardar la promesa de creación en el array
-                      promesasDeActualizacion.push(this.interestUserRepository.save(nuevoRegistro));
+                    });
+
+                    // Guardar la promesa de creación en el array
+                    promesasDeActualizacion.push(this.interestUserRepository.save(nuevoRegistro));
                 }
             }
         }
@@ -369,10 +369,10 @@ export class ConfigurationService {
         if (!userFound) {
             return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
         }
-
+       
         const inappropriateFound = await this.inappropriateContentUserRepository.find({
             where: { status: true, individualuser: { id } },
-            relations: ['inappropriate_content'],
+            relations: ['inappropiateContent'],
         })
         return inappropriateFound;
     }
@@ -443,30 +443,30 @@ export class ConfigurationService {
         await Promise.all(promesaObtencion);
 
         const promesasDeActualizacion = [];
-       
+
         for (const e of inappropriateContentUser) {
-          
+
             const inappropriateContent = await this.inappropriateContentRepository.findOne({ where: { name: e } });
-          
+
             if (inappropriateContent) {
                 const registroEncontrado = await this.inappropriateContentUserRepository.findOne({
                     where: { individualuser: { id }, inappropiateContent: { id: inappropriateContent.id } },
                 });
-                
+
                 if (registroEncontrado) {
                     // Actualizar los campos con los valores del objeto
                     registroEncontrado.status = true;
                     // Guardar la promesa de actualización en el array
                     promesasDeActualizacion.push(this.inappropriateContentUserRepository.save(registroEncontrado));
-                }else{
+                } else {
                     const nuevoRegistro = this.inappropriateContentUserRepository.create({
                         individualuser: { id }, // Asigna el usuario al nuevo registro
                         inappropiateContent: inappropriateContent, // Asigna el interés al nuevo registro
                         status: true, // Configura el estado a true
-                      });
-                  
-                      // Guardar la promesa de creación en el array
-                      promesasDeActualizacion.push(this.inappropriateContentUserRepository.save(nuevoRegistro));
+                    });
+
+                    // Guardar la promesa de creación en el array
+                    promesasDeActualizacion.push(this.inappropriateContentUserRepository.save(nuevoRegistro));
                 }
             }
         }
