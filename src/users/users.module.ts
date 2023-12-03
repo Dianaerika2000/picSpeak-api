@@ -11,4 +11,5 @@ import { IndividualUser } from './entities/individual-user.entity';
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService]
 })
+
 export class UsersModule { }

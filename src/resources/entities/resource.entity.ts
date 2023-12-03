@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Message } from "src/message/entities/message.entity";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export abstract class Resource extends BaseEntity {
@@ -16,4 +17,7 @@ export abstract class Resource extends BaseEntity {
 
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
+
+    @ManyToOne(() => Message, (message) => message.resources)
+    message: Message
 }

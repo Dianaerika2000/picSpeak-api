@@ -10,4 +10,10 @@ export class CreateResourceDto {
 
     @IsOptional()
     textOrigin?: string;
+
+    @IsOptional()
+    languageOrigin?: string;
+
+    @IsOptional()
+    languageTarget?: string;
 }

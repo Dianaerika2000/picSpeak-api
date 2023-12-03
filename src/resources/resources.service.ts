@@ -5,6 +5,8 @@ import { Resource } from './entities/resource.entity';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
 import { AwsService } from 'src/aws/aws.service';
+import { ChatGptAiService } from 'src/chat-gpt-ai/chat-gpt-ai.service';
+import { MessageService } from 'src/message/message.service';
 
 @Injectable()
 export class ResourcesService {
@@ -12,6 +14,8 @@ export class ResourcesService {
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
     private readonly awsService: AwsService,
+    private readonly chatGptAiService: ChatGptAiService,
+    private readonly messageService: MessageService,
   ) { }
 
   async create(createResourceDto: CreateResourceDto) {
@@ -32,9 +36,22 @@ export class ResourcesService {
       resource.content = labels.toString();
     } else if (createResourceDto.type == 'T') {
       //TODO: Make code for save message type text
+      const translateText = await this.chatGptAiService.getModelAnswer({
+        question: createResourceDto.textOrigin,
+        origin_language: createResourceDto.languageOrigin,
+        target_language: createResourceDto.languageTarget
+      });
+
+      console.log('response GPT', translateText);
+
+      resource = new Text();
+      resource.textOrigin = createResourceDto.textOrigin;
+      resource.textTranslate = translateText[0].text;
     }
 
-    return this.resourceRepository.save(createResourceDto);
+    console.log('resource', resource)
+
+    return this.resourceRepository.save(resource);
   }
 
   findAll() {

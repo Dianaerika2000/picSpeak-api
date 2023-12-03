@@ -4,6 +4,9 @@ import { Nacionality } from "src/nacionality/entities/nacionality.entity";
 import { InappropriateContentUser } from "src/configuration/entities/inappropriate_content_user.entity";
 import { InterestUser } from "src/configuration/entities/interest_user.entity";
 import { LanguageUser } from "src/configuration/entities/language_user.entity";
+import { Chat } from "src/message/entities/chat.entity";
+import { Message } from "src/message/entities/message.entity";
+
 
 @Entity('individualUsers')
 export class IndividualUser extends User {
@@ -41,7 +44,6 @@ export class IndividualUser extends User {
     active: boolean;
 
     //configuracion con el usuario
-   
     @ManyToOne(() => Nacionality, (nacionality) => nacionality.individualusers)
     @JoinColumn({ name: 'nacionality_id' })
     nacionality: Nacionality;
@@ -54,4 +56,14 @@ export class IndividualUser extends User {
 
     @OneToMany(() => LanguageUser, (languageUser) => languageUser.individualuser)
     languageUsers: LanguageUser[];
+
+    //TODO: Connect with chat table
+    @OneToMany(() => Chat, (chat) => chat.senderUser)
+    senderChat: Chat[];
+
+    @OneToMany(() => Chat, (chat) => chat.receivingUser)
+    receivingChat: Chat[];
+
+    @OneToMany(() => Message, (message) => message.individualUser)
+    messages: Message[];
 }

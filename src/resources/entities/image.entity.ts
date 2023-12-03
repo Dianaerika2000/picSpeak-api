@@ -1,5 +1,5 @@
 import { Resource } from "src/resources/entities/resource.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 @Entity()
 export class Image extends Resource {

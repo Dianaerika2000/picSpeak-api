@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { IndividualUser } from './entities/individual-user.entity';
 import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
+import { Message } from 'src/message/entities/message.entity';
 
 @Injectable()
 export class UsersService {
@@ -43,13 +44,13 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.userRepository.findOne({ where: { id } });
+    return this.individualRepository.findOne({ where: { id } });
   }
 
   async update(id: number, updateUserDto: UpdateProfileDto) {
-    const user = await this.individualRepository.findOne({ where: {id} });
+    const user = await this.individualRepository.findOne({ where: { id } });
 
-    console.log('USER FIND',user);
+    console.log('USER FIND', user);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -84,10 +85,10 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const userToRemove = await this.userRepository.findOne({ where: {id} });
+    const userToRemove = await this.userRepository.findOne({ where: { id } });
 
     if (!userToRemove) {
-      throw new NotFoundException(`User with ID ${id} not found`);   
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return this.userRepository.remove(userToRemove);
   }
