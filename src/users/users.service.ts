@@ -44,6 +44,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
+    //revisar, local todo ok
     return this.individualRepository.findOne({ where: { id } });
   }
 

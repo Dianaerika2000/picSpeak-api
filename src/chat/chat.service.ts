@@ -95,7 +95,7 @@ export class ChatService {
     async getAllChatsForUser(userId: number): Promise<Chat[]> {
         return this.chatRepository
           .createQueryBuilder('chat')
-          .leftJoinAndSelect('chat.senderUserId', 'senderUser')
+          .leftJoinAndSelect('chat.senderUser', 'senderUser')
           .leftJoinAndSelect('chat.receivingUser', 'receivingUser')
           .where('senderUser.id = :userId OR receivingUser.id = :userId', { userId })
           .getMany();
