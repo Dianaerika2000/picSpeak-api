@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Resource } from 'src/resources/entities/resource.entity';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { UsersService } from 'src/users/users.service';
@@ -27,14 +28,19 @@ export class MessageService {
       createMessageDto.resources.map(resourceDto => this.resourceService.create(resourceDto))
     );
 
+    const texto = {
+      createMessageDto.resources.text_origin,
+      createMessageDto.resources.text_translate
+    }
+
     // Crear una instancia del mensaje
     const message = this.messageRepository.create({
       status: true,
       individualUser: user,
       chat: chat,
-      resources: resources,
       createdAt: new Date(),
       updatedAt: new Date(),
+      text: 
     });
 
     // Guardar el mensaje en la base de datos

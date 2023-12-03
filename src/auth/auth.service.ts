@@ -30,8 +30,8 @@ export class AuthService {
         birthDate,
         photo_url }: RegisterDto) {
 
-        const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
-        const imageBuffer = Buffer.from(base64Image, 'base64');
+        //const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
+        //const imageBuffer = Buffer.from(base64Image, 'base64');
 
         const existUser = await this.usersService.findOneByEmail(email);
         
@@ -41,7 +41,7 @@ export class AuthService {
         
         const token = this.generateRandomNumber().toString();
         
-        const { profilePhotoUrl } = await this.awsService.uploadProfilePhotoToS3(imageBuffer, token);
+        const { profilePhotoUrl } = await this.awsService.uploadProfilePhotoToS3(photo_url, token);
 
         const hashedPassword = await bcryptjs.hash(password, 10);
 

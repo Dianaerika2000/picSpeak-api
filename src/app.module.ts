@@ -37,9 +37,9 @@ import { AwsModule } from './aws/aws.module';
         autoLoadEntities: true,
         synchronize: true,
         cache: false,
-        ssl: {
+        /* ssl: {
           rejectUnauthorized: false,
-        },
+        }, */
       }),
       inject: [ConfigService],
     }),

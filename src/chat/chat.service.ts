@@ -27,6 +27,8 @@ export class ChatService {
             throw new Error('Usuario no encontrado');
         }
 
+        //Preguntar si existe un chat de a con b
+
         const newChat = this.chatRepository.create({
             fondo,
             senderUser,

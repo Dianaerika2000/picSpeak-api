@@ -3,6 +3,8 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColum
 import { Chat } from "./chat.entity";
 import { Resource } from "src/resources/entities/resource.entity";
 import { IndividualUser } from "src/users/entities/individual-user.entity";
+import { Text } from "src/resources/entities/text.entity";
+import { Image } from "src/resources/entities/image.entity";
 
 @Entity()
 export class Message {
@@ -25,6 +27,12 @@ export class Message {
   @ManyToOne(() => Chat, (message) => message.messages)
   chat: Chat;
 
-  @OneToMany(() => Resource, (resources) => resources.message)
-  resources: Resource[];
+  /* @OneToMany(() => Resource, (resources) => resources.message)
+  resources: Resource[]; */
+
+  @OneToMany(() => Text, (text) => text.message)
+  text: Text[];
+
+  @OneToMany(() => Image, (image) => image.message)
+  image: Image[];
 }

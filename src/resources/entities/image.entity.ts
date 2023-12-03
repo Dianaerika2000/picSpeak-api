@@ -1,5 +1,6 @@
+import { Message } from "src/message/entities/message.entity";
 import { Resource } from "src/resources/entities/resource.entity";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 
 @Entity()
 export class Image extends Resource {
@@ -14,4 +15,7 @@ export class Image extends Resource {
 
     @Column({ nullable: false})
     content: string;
+
+    @ManyToOne(() => Message, (message) => message.image)
+    message: Message
 }

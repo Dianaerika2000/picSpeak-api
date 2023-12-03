@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Resource } from './entities/resource.entity';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
+import { Text } from './entities/text.entity';
 import { AwsService } from 'src/aws/aws.service';
 import { ChatGptAiService } from 'src/chat-gpt-ai/chat-gpt-ai.service';
 import { MessageService } from 'src/message/message.service';
@@ -13,6 +14,10 @@ export class ResourcesService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
+    @InjectRepository(Text)
+    private readonly textRepository: Repository<Text>,
+    @InjectRepository(Image)
+    private readonly imageRepository: Repository<Image>,
     private readonly awsService: AwsService,
     private readonly chatGptAiService: ChatGptAiService,
   ) { }
@@ -43,14 +48,11 @@ export class ResourcesService {
 
       console.log('response GPT', translateText);
 
-      resource = new Text();
-      resource.textOrigin = createResourceDto.textOrigin;
-      resource.textTranslate = translateText[0].text;
+      return this.textRepository.create({
+        textOrigin: createResourceDto.textOrigin,
+        textTranslate: translateText[0].text,
+      });
     }
-
-    console.log('resource', resource)
-
-    return this.resourceRepository.save(resource);
   }
 
   findAll() {

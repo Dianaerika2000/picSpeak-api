@@ -17,7 +17,4 @@ export abstract class Resource extends BaseEntity {
 
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
-
-    @ManyToOne(() => Message, (message) => message.resources)
-    message: Message
 }
