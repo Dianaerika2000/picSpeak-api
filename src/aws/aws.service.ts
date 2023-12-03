@@ -10,7 +10,6 @@ export class AwsService {
   ) {}
 
   async uploadProfilePhotoToS3( profilePhotoBuffer: Buffer, faceId: string = 'default') {
-
     const s3Bucket = this.configService.get('AWS_BUCKET');
 
     // Step 1: Connects to AWS S3 service
@@ -28,7 +27,7 @@ export class AwsService {
         Bucket: s3Bucket,
         Key: `user_avatar_${faceId}.jpeg`,
         Body: profilePhotoBuffer,
-        ContentType: 'image/jpeg',
+        ContentType: 'image/jpg',
       }),
     );
     

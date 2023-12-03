@@ -80,6 +80,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const messageSend = await this.chatService.sendMessage(message);
 
     this.server.to(chat).emit('message', messageSend);
+    client.emit('message', messageSend)
   }
 
   @SubscribeMessage('typing')
