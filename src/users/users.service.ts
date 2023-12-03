@@ -39,11 +39,11 @@ export class UsersService {
   }
 
   findAll() {
-    return this.userRepository.find();
+    return this.individualRepository.find();
   }
 
   findOne(id: number) {
-    return this.userRepository.findOne({ where: { id } });
+    return this.individualRepository.findOne({ where: { id } });
   }
 
   async update(id: number, updateUserDto: UpdateProfileDto) {
