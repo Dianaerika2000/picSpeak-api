@@ -30,17 +30,18 @@ export class AuthService {
         birthDate,
         photo_url }: RegisterDto) {
 
-        const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
+        const base64ToString = photo_url.toString('base64');
+        const base64Image = base64ToString.replace(/^data:image\/[a-z]+;base64,/, '');
         const imageBuffer = Buffer.from(base64Image, 'base64');
 
         const existUser = await this.usersService.findOneByEmail(email);
-        
+
         if (existUser) {
             throw new BadRequestException('Email already exists');
         }
-        
+
         const token = this.generateRandomNumber().toString();
-        
+
         const { profilePhotoUrl } = await this.awsService.uploadProfilePhotoToS3(imageBuffer, token);
 
         const hashedPassword = await bcryptjs.hash(password, 10);
