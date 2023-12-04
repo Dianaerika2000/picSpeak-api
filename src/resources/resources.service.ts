@@ -7,7 +7,7 @@ import { Image } from './entities/image.entity';
 import { Text } from './entities/text.entity';
 import { AwsService } from 'src/aws/aws.service';
 import { ChatGptAiService } from 'src/chat-gpt-ai/chat-gpt-ai.service';
-import { MessageService } from 'src/message/message.service';
+import { CreateTextDto } from './dto/create-text.dto';
 
 @Injectable()
 export class ResourcesService {
@@ -59,6 +59,46 @@ export class ResourcesService {
         textTranslate: 'inapropiado',
       });
     }
+  }
+
+  async createText(CreateTextDto: CreateTextDto) {
+    const translateText = await this.chatGptAiService.getModelAnswer({
+      question: CreateTextDto.textOrigin,
+      origin_language: CreateTextDto.languageOrigin,
+      target_language: CreateTextDto.languageTarget
+    });
+
+    const text = this.textRepository.create({
+      textOrigin: CreateTextDto.textOrigin,
+      // textTranslate: translateText[0].text,
+      textTranslate: 'inapropiado',
+      type: 'Text',
+    });
+
+    return await this.textRepository.save(text);
+  }
+
+  async createImage(createResourceDto: CreateResourceDto) {
+    const base64Image = createResourceDto.pathDevice.replace(/^data:image\/[a-z]+;base64,/, '');
+    const imageBuffer = Buffer.from(base64Image, 'base64');
+
+    const key = `${Date.now().toString()} - ${createResourceDto.pathDevice}`;
+    const uploadImage = await this.awsService.uploadImageToS3(imageBuffer, key);
+
+    const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
+
+    /**
+     * El frontend se encarga de filtrar, si mostrar o no
+     */
+
+    const image = this.imageRepository.create({
+      url: uploadImage.photoUrl,
+      pathDevice: uploadImage.photoUrl,
+      content: labels.toString(),
+      type: 'Image'
+    });
+
+    return await this.imageRepository.save(image);
   }
 
   findAll() {

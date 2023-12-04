@@ -9,10 +9,10 @@ import { ApiTags } from '@nestjs/swagger';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  /* @Post()
+  @Post()
   create(@Body() createMessageDto: CreateMessageDto) {
     return this.messageService.createMessage(createMessageDto);
-  } */
+  }
  
   @Get()
   findAll() {

@@ -24,25 +24,27 @@ export class MessageService {
     private resourceService: ResourcesService,
   ) { }
 
-  async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
+  async createMessage(createMessageDto: CreateMessageDto) {
     console.log('LLEGA MESAGE', createMessageDto)
+
+    const { userId, chatId, resources } = createMessageDto;
+
     // Obtener instancias del usuario y del chat
-    const user = await this.individualUserService.findOne(createMessageDto.userId);
-    const chat = await this.chatRepository.findOneBy({id: createMessageDto.chatId});
+    const user = await this.individualUserService.findOne(userId);
+    const chat = await this.chatRepository.findOneBy({id: chatId});
 
-    const resources = await Promise.all(
-      createMessageDto.resources.map(resourceDto => this.resourceService.create(resourceDto))
-    );
+    const images = resources.filter(resource => resource?.type === 'I');
+    const texts = resources.filter(resource => resource?.type === 'T');
 
-    // Crear una instancia del mensaje
+    // Crear el mensaje
     const message = this.messageRepository.create({
       status: true,
       individualUser: user,
       chat: chat,
       createdAt: new Date(),
       updatedAt: new Date(),
-      text: resources.filter(resource => resource instanceof Text),
-      image: resources.filter(resource => resource instanceof Image),
+      text: await Promise.all(texts.map(text => this.resourceService.createText(text))),
+      image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
     });
 
     // Guardar el mensaje en la base de datos

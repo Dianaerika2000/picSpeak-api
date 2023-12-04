@@ -31,8 +31,8 @@ export class Message {
   resources: Resource[]; */
 
   @OneToMany(() => Text, (text) => text.message)
-  text: Text[];
+  text?: Text[];
 
   @OneToMany(() => Image, (image) => image.message)
-  image: Image[];
+  image?: Image[];
 }
