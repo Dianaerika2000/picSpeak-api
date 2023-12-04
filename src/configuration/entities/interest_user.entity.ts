@@ -20,9 +20,6 @@ export class InterestUser {
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
 
-    // @ManyToOne(() => User, (user) => user.interestUsers)
-    // @JoinColumn({ name: 'user_id' })
-    // user: User;
     @ManyToOne(() => IndividualUser, (individualuser) => individualuser.interestUsers)
     @JoinColumn({ name: 'user_id' })
     individualuser: IndividualUser;

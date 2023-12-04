@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { IndividualUser } from './entities/individual-user.entity';
 import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
+import { InterestUser } from 'src/configuration/entities/interest_user.entity';
+import { LanguageUser } from 'src/configuration/entities/language_user.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +16,10 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(IndividualUser)
     private readonly individualRepository: Repository<IndividualUser>,
+    @InjectRepository(InterestUser)
+    private interestUserRepository: Repository<InterestUser>,
+    @InjectRepository(LanguageUser)
+    private languageUserRepository: Repository<LanguageUser>,
   ) { }
 
   create(createUserDto: CreateUserDto) {
@@ -47,9 +53,9 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateProfileDto) {
-    const user = await this.individualRepository.findOne({ where: {id} });
+    const user = await this.individualRepository.findOne({ where: { id } });
 
-    console.log('USER FIND',user);
+    console.log('USER FIND', user);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -84,10 +90,10 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const userToRemove = await this.userRepository.findOne({ where: {id} });
+    const userToRemove = await this.userRepository.findOne({ where: { id } });
 
     if (!userToRemove) {
-      throw new NotFoundException(`User with ID ${id} not found`);   
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return this.userRepository.remove(userToRemove);
   }
@@ -102,5 +108,74 @@ export class UsersService {
 
   async save(individualUser: IndividualUser) {
     return this.individualRepository.save(individualUser);
+  }
+
+  //sugerencia de amigos
+  async suggestUsers(userId: number) {
+    const userFound = await this.individualRepository.findOne({ where: { id: userId } });
+    if (!userFound) {
+      return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
+    }
+    const userLanguages = await this.languageUserRepository.find({ where: { individualuser: { id: userId }, status: true }, relations: ['language'] });
+    const userInterests = await this.interestUserRepository.find({ where: { individualuser: { id: userId }, status: true }, relations: ['interest'] });
+
+
+    const userInterestIds = userInterests.map((interestUser) => interestUser.interest.id);
+    const userLanguageIds = userLanguages.map((languageUser) => languageUser.language.id);
+
+    if (userInterestIds.length === 0 && userLanguageIds.length === 0) {
+      return [];
+    }
+
+    let usersWithSimilarInterests = [];
+    let usersWithSimilarLanguages = [];
+    
+    // Only run the query if userInterestIds is not empty
+    if (userInterestIds.length > 0) {
+      usersWithSimilarInterests = await this.interestUserRepository
+        .createQueryBuilder('interestUser')
+        .innerJoinAndSelect('interestUser.interest', 'interest')
+        .innerJoinAndSelect('interestUser.individualuser', 'individualuser')
+        .where('interest.id IN (:...interests)', {
+          interests: userInterestIds,
+        })
+        .getMany();
+    }
+    
+    // Only run the query if userLanguageIds is not empty
+    if (userLanguageIds.length > 0) {
+      usersWithSimilarLanguages = await this.languageUserRepository
+        .createQueryBuilder('languageUser')
+        .innerJoinAndSelect('languageUser.language', 'language')
+        .innerJoinAndSelect('languageUser.individualuser', 'individualuser')
+        .where('language.id IN (:...languages)', {
+          languages: userLanguageIds,
+        })
+        .getMany();
+    }
+
+    const userCounts = new Map();
+
+    for (const interestUser of usersWithSimilarInterests) {
+      const uId = interestUser.individualuser.id;
+      if (userId != uId) {
+        userCounts.set(uId, (userCounts.get(uId) || 0) + 1);
+      }
+    }
+
+    for (const languageUser of usersWithSimilarLanguages) {
+      const uId = languageUser.individualuser.id;
+      if (userId != uId) {
+        userCounts.set(uId, (userCounts.get(uId) || 0) + 1);
+      }
+    }
+
+    const sortedUserIds = Array.from(userCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([userId, count]) => userId);
+
+    const suggestedUsers = await this.individualRepository.findByIds(sortedUserIds);
+
+    return suggestedUsers;
   }
 }

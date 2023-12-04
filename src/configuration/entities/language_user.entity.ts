@@ -23,10 +23,6 @@ export class LanguageUser {
     @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
 
-    // @ManyToOne(() => User, (user) => user.languageUsers)
-    // @JoinColumn({ name: 'user_id' })
-    // user: User;
-
     @ManyToOne(() => Language, (language) => language.languageUsers)
     @JoinColumn({ name: 'language_id' })
     language: Language;

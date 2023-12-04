@@ -4,9 +4,11 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { IndividualUser } from './entities/individual-user.entity';
+import { InterestUser } from 'src/configuration/entities/interest_user.entity';
+import { LanguageUser } from 'src/configuration/entities/language_user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, IndividualUser])],
+  imports: [TypeOrmModule.forFeature([User, IndividualUser,InterestUser,LanguageUser])],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService]
