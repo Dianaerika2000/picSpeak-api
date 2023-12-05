@@ -50,29 +50,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // }
 
   handleDisconnect(client: Socket) {
-    if(client.data.user) {
-      delete this.userSocketsMap[client.data.user.userId];    
+    if (client.data.user) {
+      delete this.userSocketsMap[client.data.user.userId];
       console.log(`list of users actual:  ${JSON.stringify(this.userSocketsMap)}`);
     }
   }
 
   getReceivingUserSocket(userId: number) {
     // Encontrar el socketId mapeado
-    const socketInfo = this.userSocketsMap[userId]; 
-    
-    if(!socketInfo) {
+    const socketInfo = this.userSocketsMap[userId];
+
+    if (!socketInfo) {
       // manejar error
       console.log('No existe un usuario conectado con ese id')
     }
-  
+
     // Obtener el socket 
     const socket = this.server.of("/").sockets.get(socketInfo.socketId);
-  
-    if(!socket) {
+
+    if (!socket) {
       // manejar error
-      console.log('Socket no encontrado') 
+      console.log('Socket no encontrado')
     }
-  
+
     return socket;
   }
 
@@ -91,7 +91,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (existingChat) {
       //Traer las conversaciones
       const messages = await this.chatService.getMessagesByChatId(existingChat.id);
-      
+
       //Enviar los mensajes
       client.emit('messagesLoaded', messages);
 
@@ -132,7 +132,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //   this.server.to(chat).emit('message', messageSend);
   // }
-  
+
   /**
    * ENVIAR UN MENSAJE A CHAT YA CREADO
    * @param client 
@@ -140,7 +140,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
    */
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: { receivingUserId: number, message: CreateMessageDto }) {
-    
+
     const { receivingUserId, message } = payload;
 
     // Save the message

@@ -93,12 +93,46 @@ export class ChatService {
     }
 
     async getAllChatsForUser(userId: number): Promise<Chat[]> {
-        return this.chatRepository
-          .createQueryBuilder('chat')
-          .leftJoinAndSelect('chat.senderUser', 'senderUser')
-          .leftJoinAndSelect('chat.receivingUser', 'receivingUser')
-          .where('senderUser.id = :userId OR receivingUser.id = :userId', { userId })
-          .getMany();
-      }
+        const query = `
+            SELECT 
+            c.id AS chatId,
+            CASE
+                WHEN c."senderUserId" = 3 THEN c."receivingUserId"
+                ELSE c."senderUserId"
+            END AS resUserId,
+            us.username AS resUserName,
+            us.photo_url AS resUserPhoto,
+            n.name AS resUserNation,
+            tx."text_origin" AS message,
+            tx."created_at" AS hora
+            FROM
+            public.chat c
+            INNER JOIN
+            public."individualUsers" us ON us.id = c."senderUserId" OR us.id = c."receivingUserId"
+            LEFT JOIN
+            public."message" ms ON ms.id = (
+                SELECT
+                m.id
+                FROM
+                public."message" m
+                WHERE
+                "chatId" = c.id
+                ORDER BY
+                m."created_at" DESC
+                LIMIT
+                1
+            )
+            LEFT JOIN
+            public.text tx ON tx."messageId" = ms.id
+            LEFT JOIN
+            public.nacionality n ON n.id = us."nacionality_id"
+            WHERE
+            c."senderUserId" = $1 OR c."receivingUserId" = $1;
+        `;
+
+        const results = await this.chatRepository.query(query, [userId]);
+
+        return results;
+    }
 }
 

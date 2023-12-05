@@ -91,7 +91,8 @@ export class AuthService {
             message: "Login successful",
             user: {
                 token: token,
-                email: user.email
+                email: user.email,
+                id: user.id
             }
         };
     }
