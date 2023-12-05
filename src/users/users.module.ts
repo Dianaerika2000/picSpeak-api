@@ -6,9 +6,10 @@ import { User } from './entities/user.entity';
 import { IndividualUser } from './entities/individual-user.entity';
 import { InterestUser } from 'src/configuration/entities/interest_user.entity';
 import { LanguageUser } from 'src/configuration/entities/language_user.entity';
+import { Contact } from 'src/contact/entities/contact.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, IndividualUser,InterestUser,LanguageUser])],
+  imports: [TypeOrmModule.forFeature([User, IndividualUser,InterestUser,LanguageUser, Contact])],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService]

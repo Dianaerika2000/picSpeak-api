@@ -8,6 +8,7 @@ import { IndividualUser } from './entities/individual-user.entity';
 import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
 import { InterestUser } from 'src/configuration/entities/interest_user.entity';
 import { LanguageUser } from 'src/configuration/entities/language_user.entity';
+import { Contact } from 'src/contact/entities/contact.entity';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     private interestUserRepository: Repository<InterestUser>,
     @InjectRepository(LanguageUser)
     private languageUserRepository: Repository<LanguageUser>,
+    @InjectRepository(Contact) private contactRepository: Repository<Contact>
   ) { }
 
   create(createUserDto: CreateUserDto) {
@@ -112,10 +114,11 @@ export class UsersService {
 
   //sugerencia de amigos
   async suggestUsers(userId: number) {
-    const userFound = await this.individualRepository.findOne({ where: { id: userId } });
+    const userFound = await this.individualRepository.findOne({ where: { id: userId }, relations: ['contact'] });
     if (!userFound) {
       return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
     }
+
     const userLanguages = await this.languageUserRepository.find({ where: { individualuser: { id: userId }, status: true }, relations: ['language'] });
     const userInterests = await this.interestUserRepository.find({ where: { individualuser: { id: userId }, status: true }, relations: ['interest'] });
 
@@ -129,30 +132,49 @@ export class UsersService {
 
     let usersWithSimilarInterests = [];
     let usersWithSimilarLanguages = [];
-    
+    let contactUserIds = [];
+    if (userFound.contact) {
+      contactUserIds = userFound.contact.map((contact) => contact.contactId);
+    }
+
     // Only run the query if userInterestIds is not empty
     if (userInterestIds.length > 0) {
-      usersWithSimilarInterests = await this.interestUserRepository
+      let query = this.interestUserRepository
         .createQueryBuilder('interestUser')
         .innerJoinAndSelect('interestUser.interest', 'interest')
         .innerJoinAndSelect('interestUser.individualuser', 'individualuser')
         .where('interest.id IN (:...interests)', {
           interests: userInterestIds,
-        })
-        .getMany();
+        });
+
+      if (contactUserIds.length > 0) {
+        query = query.andWhere('individualuser.id NOT IN (:...contactUserIds)', {
+          contactUserIds: contactUserIds,
+        });
+      }
+
+      usersWithSimilarInterests = await query.getMany();
     }
-    
+
     // Only run the query if userLanguageIds is not empty
     if (userLanguageIds.length > 0) {
-      usersWithSimilarLanguages = await this.languageUserRepository
+      let query = this.languageUserRepository
         .createQueryBuilder('languageUser')
         .innerJoinAndSelect('languageUser.language', 'language')
         .innerJoinAndSelect('languageUser.individualuser', 'individualuser')
         .where('language.id IN (:...languages)', {
           languages: userLanguageIds,
-        })
-        .getMany();
+        });
+
+      if (contactUserIds.length > 0) {
+        query = query.andWhere('individualuser.id NOT IN (:...contactUserIds)', {
+          contactUserIds: contactUserIds,
+        });
+      }
+
+      usersWithSimilarLanguages = await query.getMany();
     }
+
 
     const userCounts = new Map();
 

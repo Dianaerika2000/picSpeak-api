@@ -5,6 +5,7 @@ import { InappropriateContentUser } from "src/configuration/entities/inappropria
 import { InterestUser } from "src/configuration/entities/interest_user.entity";
 import { LanguageUser } from "src/configuration/entities/language_user.entity";
 import { StatusIndividualUser } from "src/status-individual-user/entities/status-individual-user.entity";
+import { Contact } from "src/contact/entities/contact.entity";
 
 @Entity('individualUsers')
 export class IndividualUser extends User {
@@ -42,11 +43,11 @@ export class IndividualUser extends User {
     active: boolean;
 
     //configuracion con el usuario
-   
+
     @ManyToOne(() => Nacionality, (nacionality) => nacionality.individualusers)
     @JoinColumn({ name: 'nacionality_id' })
     nacionality: Nacionality;
-    
+
     @OneToMany(() => InappropriateContentUser, (inappropriateContentUser) => inappropriateContentUser.individualuser)
     inappropriateContentUsers: InappropriateContentUser[];
 
@@ -58,4 +59,7 @@ export class IndividualUser extends User {
 
     @OneToMany(() => StatusIndividualUser, (statusIndividualUser) => statusIndividualUser.individualuser)
     statusIndividualUser: StatusIndividualUser[];
+
+    @OneToMany(() => Contact, (contact) => contact.individualuser)
+    contact: Contact[];
 }
