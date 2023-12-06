@@ -94,6 +94,7 @@ export class ChatService {
     }
 
     async getAllChatsForUser(userId: number): Promise<Chat[]> {
+        
         const query = `
         WITH LatestMessage AS (
             SELECT
