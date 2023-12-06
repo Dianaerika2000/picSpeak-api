@@ -23,4 +23,9 @@ export class ChatController {
   async getChatsBySenderUserId(@Param('userId') userId: number){
     return this.chatService.getChatsBySenderUserId(userId);
   }
+  //obtener los mensajes de un chat
+  @Get(':id/messages')
+  async getMessagesByChatId(@Param('id') id: number) {
+    return this.chatService.getMessagesByChatId(id);
+  }
 }
