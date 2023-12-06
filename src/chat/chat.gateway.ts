@@ -85,12 +85,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async joinChat(client: Socket, payload: { chat: string, senderUserId: number, receivingUserId: number, fondo: string }) {
     const { chat, senderUserId, receivingUserId, fondo } = payload;
 
+    console.log('payload', payload)
     // Check if the chat already exists or create a new one
     const existingChat = await this.chatService.findExistingChat(senderUserId, receivingUserId);
+    console.log('EXISTE', existingChat)
 
     if (existingChat) {
       //Traer las conversaciones
       const messages = await this.chatService.getMessagesByChatId(existingChat.id);
+      console.log('CHATMESS', messages)
 
       //Enviar los mensajes
       client.emit('messagesLoaded', messages);
@@ -149,6 +152,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Emit the message to the sender
     try {
       client.emit('newMessage', message);
+      console.log('NEW MESSAGE client',message)
     } catch (error) {
       console.error('Error al emitir el mensaje al sender:', error);
     }
@@ -158,6 +162,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // Send the message directly to the receiving user
     receivingUserSocket.emit('newMessage', savedMessage);
+    console.log('NEW MESSAGE',savedMessage)
   }
 
   @SubscribeMessage('typing')

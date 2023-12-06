@@ -47,6 +47,8 @@ export class MessageService {
       image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
     });
 
+    console.log('SERVICE MSM', message)
+
     // Guardar el mensaje en la base de datos
     return await this.messageRepository.save(message);
   }
