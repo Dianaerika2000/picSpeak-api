@@ -42,6 +42,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Actualizar lista global
     this.userSocketsMap[onlineUser.userId] = onlineUser;
 
+    // Enviar mensajes offline
+    // await this.pushOfflineMessages(client);
+
     console.log(`list of users:  ${JSON.stringify(this.userSocketsMap)}`);
   }
 
@@ -55,6 +58,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`list of users actual:  ${JSON.stringify(this.userSocketsMap)}`);
     }
   }
+
+  // async pushOfflineMessages(socket: Socket) {
+  //   // Obtener usuario 
+  //   const user = socket.data.user;
+    
+  //   if(!user) {
+  //     return; 
+  //   }
+  
+  //   // Query mensajes offline
+  //   const offlineMessages = await this.chatService.findOfflineMessages(user.userId);
+  
+  //   // Enviar cada mensaje
+  //   offlineMessages.forEach(message => {
+  //     socket.emit('newMessage', message);  
+  //   });
+  // }
 
   getReceivingUserSocket(userId: number) {
     // Encontrar el socketId mapeado
@@ -147,17 +167,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const savedMessage = await this.chatService.sendMessage(message);
 
     // Emit the message to the sender
-    try {
-      client.emit('newMessage', message);
-    } catch (error) {
-      console.error('Error al emitir el mensaje al sender:', error);
+    client.emit('newMessage', message);
+
+    // Obtener socket del receptor
+    const receivingSocket: Socket = this.getReceivingUserSocket(receivingUserId);
+
+    if(receivingSocket) {  
+      // En línea, emitimos 
+      receivingSocket.emit('newMessage', savedMessage);
+  
+    } else {
+      // No conectado, guardar evento en BD
+  
+      const offlineMessage = {
+        socketId: null,
+        message: savedMessage
+      }
+
+      // Guardar en BD
+      // await this.chatService.saveOfflineMessage(offlineMessage); 
     }
-
-    // Find the socket ID of the receiving user
-    const receivingUserSocket: Socket = this.getReceivingUserSocket(receivingUserId);
-
-    // Send the message directly to the receiving user
-    receivingUserSocket.emit('newMessage', savedMessage);
   }
 
   @SubscribeMessage('typing')
