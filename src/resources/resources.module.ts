@@ -3,12 +3,16 @@ import { ResourcesService } from './resources.service';
 import { ResourcesController } from './resources.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Resource } from './entities/resource.entity';
+import { Image } from './entities/image.entity';
+import { Text } from './entities/text.entity';
 import { AwsModule } from 'src/aws/aws.module';
+import { ChatGptAiModule } from 'src/chat-gpt-ai/chat-gpt-ai.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Resource]),
-    AwsModule
+    TypeOrmModule.forFeature([Resource, Text, Image]),
+    AwsModule,
+    ChatGptAiModule,
   ],
   controllers: [ResourcesController],
   providers: [ResourcesService],

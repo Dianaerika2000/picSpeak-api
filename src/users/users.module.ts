@@ -14,4 +14,5 @@ import { Contact } from 'src/contact/entities/contact.entity';
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService]
 })
+
 export class UsersModule { }

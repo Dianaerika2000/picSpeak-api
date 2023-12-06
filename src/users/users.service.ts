@@ -9,6 +9,7 @@ import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
 import { InterestUser } from 'src/configuration/entities/interest_user.entity';
 import { LanguageUser } from 'src/configuration/entities/language_user.entity';
 import { Contact } from 'src/contact/entities/contact.entity';
+import { Message } from 'src/message/entities/message.entity';
 
 @Injectable()
 export class UsersService {
@@ -51,6 +52,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
+    //revisar, local todo ok
     return this.individualRepository.findOne({ where: { id } });
   }
 

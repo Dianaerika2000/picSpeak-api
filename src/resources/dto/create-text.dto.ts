@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from "class-validator";
 
-export class CreateResourceDto {
+export class CreateTextDto {
     @IsString()
     type: string;
 

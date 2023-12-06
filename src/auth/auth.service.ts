@@ -32,8 +32,8 @@ export class AuthService {
 
         const base64ToString = photo_url.toString('base64');
         const base64Image = base64ToString.replace(/^data:image\/[a-z]+;base64,/, '');
-        const imageBuffer = Buffer.from(base64Image, 'base64');
-
+        const imageBuffer = Buffer.from(base64Image, 'base64'); 
+        
         const existUser = await this.usersService.findOneByEmail(email);
 
         if (existUser) {
