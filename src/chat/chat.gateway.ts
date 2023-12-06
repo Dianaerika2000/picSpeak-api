@@ -42,6 +42,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Actualizar lista global
     this.userSocketsMap[onlineUser.userId] = onlineUser;
 
+    // Enviar mensajes offline
+    // await this.pushOfflineMessages(client);
+
     console.log(`list of users:  ${JSON.stringify(this.userSocketsMap)}`);
   }
 
@@ -55,6 +58,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`list of users actual:  ${JSON.stringify(this.userSocketsMap)}`);
     }
   }
+
+  // async pushOfflineMessages(socket: Socket) {
+  //   // Obtener usuario 
+  //   const user = socket.data.user;
+    
+  //   if(!user) {
+  //     return; 
+  //   }
+  
+  //   // Query mensajes offline
+  //   const offlineMessages = await this.chatService.findOfflineMessages(user.userId);
+  
+  //   // Enviar cada mensaje
+  //   offlineMessages.forEach(message => {
+  //     socket.emit('newMessage', message);  
+  //   });
+  // }
 
   getReceivingUserSocket(userId: number) {
     // Encontrar el socketId mapeado
