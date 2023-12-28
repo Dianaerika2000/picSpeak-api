@@ -77,6 +77,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // }
 
   getReceivingUserSocket(userId: number) {
+    
     // Encontrar el socketId mapeado
     const socketInfo = this.userSocketsMap[userId];
 

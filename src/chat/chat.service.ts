@@ -102,63 +102,85 @@ export class ChatService {
         }
 
         const query = `WITH chat_data AS (
+            SELECT 
+                chat.id as chat_id, 
+                CASE 
+                    WHEN chat."senderUserId" = $1 THEN chat."receivingUserId"
+                    WHEN chat."receivingUserId" = $1 THEN chat."senderUserId"
+                END AS other_user_id,
+                CASE 
+                    WHEN chat."senderUserId" = $1 THEN $1
+                    ELSE chat."senderUserId"
+                END AS original_user_id
+            FROM 
+                chat
+            WHERE 
+                chat."senderUserId" = $1 OR chat."receivingUserId" = $1
+        ),
+        last_message AS (
+            SELECT 
+                "message"."chatId",
+                MAX("message".id) as last_message_id,
+                MAX("message"."individualUserId") as last_message_senderUser,
+                MAX("message".created_at) as last_message_created_at
+            FROM 
+                "message"
+            GROUP BY 
+                "message"."chatId"
+        ),
+        last_text AS (
+            SELECT 
+                text."messageId",
+                text.text_origin,
+                text.text_translate,
+                MAX(text.created_at) as last_text_created_at
+            FROM 
+                text
+            GROUP BY
+                text."messageId", text.text_origin, text.text_translate
+        ),
+        user_language AS (
+            SELECT 
+                "language_user"."user_id",
+                "language".name as matern_language
+            FROM 
+                "language_user"
+            JOIN
+                "language" ON "language_user"."language_id" = "language".id
+            WHERE 
+                "language_user".matern_language = true
+        )
         SELECT 
-            chat.id as chat_id, 
-            CASE 
-                WHEN chat."senderUserId" = $1 THEN chat."receivingUserId"
-                WHEN chat."receivingUserId" = $1 THEN chat."senderUserId"
-            END AS other_user_id
+            chat_data.*,
+            "individualUsers".name as other_user_name,
+            "individualUsers".lastname as other_user_lastname,
+            "individualUsers".username as other_user_username,
+            "individualUsers".photo_url as other_user_photo,
+            "nacionality".name as other_user_nacionality,
+            other_user_language.matern_language as other_user_matern_language,
+            original_user_language.matern_language as original_user_matern_language,
+            last_message.last_message_senderUser as message_user_id,
+            last_message.last_message_created_at as message_datetime,
+            last_text.text_origin as message_text_origin,
+            last_text.text_translate as message_text_translate
         FROM 
-            chat
+            chat_data
+        JOIN 
+            "individualUsers" ON chat_data.other_user_id = "individualUsers".id
+        JOIN
+            "nacionality" ON "individualUsers".nacionality_id = "nacionality".id
+        JOIN
+            user_language as other_user_language ON chat_data.other_user_id = other_user_language."user_id"
+        JOIN
+            user_language as original_user_language ON chat_data.original_user_id = original_user_language."user_id"
+        JOIN
+            last_message ON chat_data.chat_id = last_message."chatId"
+        LEFT JOIN
+            last_text ON last_message.last_message_id = last_text."messageId"
         WHERE 
-            chat."senderUserId" = $1 OR chat."receivingUserId" = $1
-    ),
-    last_message AS (
-        SELECT 
-            "message"."chatId",
-            MAX("message".id) as last_message_id,
-            MAX("message"."individualUserId") as last_message_senderUser,
-            MAX("message".created_at) as last_message_created_at
-        FROM 
-            "message"
-        GROUP BY 
-            "message"."chatId"
-    ),
-    last_text AS (
-        SELECT 
-            text."messageId",
-            text.text_origin,
-            text.text_translate,
-            MAX(text.created_at) as last_text_created_at
-        FROM 
-            text
-        GROUP BY
-            text."messageId", text.text_origin, text.text_translate
-    )
-    SELECT 
-    chat_data.*,
-    "individualUsers".name as other_user_name,
-	"individualUsers".lastname as other_user_lastname,
-	"individualUsers".username as other_user_username,
-	"individualUsers".photo_url as other_user_photo,
-    "nacionality".name as other_user_nacionality,
-    "nacionality".url as other_user_nacionality_url,
-	last_message.last_message_senderUser as message_user_id,
-    last_message.last_message_created_at as message_datetime,
-    last_text.text_origin as message_text_origin,
-	last_text.text_translate as message_text_translate
-    FROM 
-        chat_data
-    JOIN 
-        "individualUsers" ON chat_data.other_user_id = "individualUsers".id
-    JOIN
-        "nacionality" ON "individualUsers".nacionality_id = "nacionality".id
-    JOIN
-        last_message ON chat_data.chat_id = last_message."chatId"
-    LEFT JOIN
-        last_text ON last_message.last_message_id = last_text."messageId"
-    WHERE 
-        last_message.last_message_created_at IS NOT NULL;
+            last_message.last_message_created_at IS NOT NULL
+            ORDER BY 
+            last_message.last_message_created_at DESC;  
     `;
         const results = await this.chatRepository.query(query, [userId]);
 

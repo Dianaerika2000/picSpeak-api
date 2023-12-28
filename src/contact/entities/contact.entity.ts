@@ -23,6 +23,7 @@ export class Contact {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+  
   //Relacion de Muchos a uno con individual User
   @ManyToOne(() => IndividualUser, (individualuser) => individualuser.contact)
   @JoinColumn({ name: 'user_id' })

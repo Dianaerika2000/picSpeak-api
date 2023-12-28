@@ -19,18 +19,32 @@ export class ContactService {
         return { message: 'success', data: await this.contactRepository.find() };
     }
 
-    async getContactsUser(id: number) {//Obtiene los contactos de un usuario
+    async getContactsUser(id: number) {
         const userFound = await this.individualRepository.findOne({ where: { id } });
 
-        if (!userFound) { //no encuentra al usuario
-            return new HttpException('User not found', HttpStatus.NOT_FOUND)
+        if (!userFound) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
         const contactsFound = await this.contactRepository.find({ where: { individualuser: { id } } });
 
-        return { message: 'success', data: contactsFound };
+        const chats = await this.chatRepository.createQueryBuilder("chat")
+            .leftJoinAndSelect("chat.senderUser", "senderUser")
+            .leftJoinAndSelect("chat.receivingUser", "receivingUser")
+            .where("chat.senderUser.id = :userId OR chat.receivingUser.id = :userId", { userId: id })
+            .getMany();
 
+        let contactsInChats = contactsFound.map(contact => {
+            const chatWithContact = chats.find(chat =>
+                chat.senderUser.id === contact.contactId || chat.receivingUser.id === contact.contactId
+            );
+            return { ...contact, chat: chatWithContact };
+        });
+        contactsInChats = contactsInChats.sort((a, b) => a.nickname.localeCompare(b.nickname));
+        return { message: 'success', data: contactsInChats };
     }
+
+
 
     async createContactUser(createContact: CreateContactDto) {
         const userFound = await this.individualRepository.findOne({ where: { id: createContact.user_id } });
@@ -67,13 +81,13 @@ export class ContactService {
                 senderUser: userFound,
                 receivingUser: userContactFound
             })
-            newChat=await this.chatRepository.save(newChat);
-        }else{
-              if(existingChatA){
-                newChat=existingChatA
-              }else{
-                newChat=existingChatB
-              }
+            newChat = await this.chatRepository.save(newChat);
+        } else {
+            if (existingChatA) {
+                newChat = existingChatA
+            } else {
+                newChat = existingChatB
+            }
         }
         const newContact = this.contactRepository.create({
             nickname: userContactFound.name,
