@@ -52,14 +52,17 @@ export class AuthService {
             username,
             birthDate,
             email,
-            photo_url: profilePhotoUrl,
+            photo_url: 'photo',//profilePhotoUrl,
             password: hashedPassword,
             activationToken: token,
             type: 'individual'
         });
 
         const user = await this.usersService.findOneByEmail(newUser.email);
-        const payload = { user };
+        const payload = {
+            message: "User profile",
+            user: user,
+        };
         const authToken = await this.jwtService.signAsync(payload);
 
         await this.mailService.sendVerificationEmail(email, token);
@@ -84,16 +87,19 @@ export class AuthService {
             throw new UnauthorizedException("Invalid password");
         }
 
-        const payload = { user };
+        const payload = { 
+            message: "User profile",
+            user: user, 
+        };
         const token = await this.jwtService.signAsync(payload);
 
         return {
             message: "Login successful",
             user: {
                 id: user.id,
-                token: token,
                 email: user.email
-            }
+            },
+            token: token
         };
     }
 
