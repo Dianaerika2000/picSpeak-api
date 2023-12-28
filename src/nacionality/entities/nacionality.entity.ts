@@ -5,22 +5,25 @@ import { IndividualUser } from "src/users/entities/individual-user.entity";
 @Entity() //convierte inmediatamente a una tabla
 export class Nacionality {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
-    @Column({  name: 'name', nullable: false})
-    name:string;
+    @Column({ name: 'name', nullable: false })
+    name: string;
 
-    @CreateDateColumn({ name: 'created_at'})
+    @Column({ name: 'url', nullable: true })
+    url: string;
+    
+    @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @UpdateDateColumn({ name: 'updated_at'})
+    @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    @DeleteDateColumn({ name: 'deleted_at'})
+    @DeleteDateColumn({ name: 'deleted_at' })
     deletedAt: Date;
 
     @OneToMany(() => IndividualUser, (individualusers) => individualusers.nacionality)
     individualusers: IndividualUser[]
 
-   
+
 }

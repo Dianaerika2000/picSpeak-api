@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { IndividualUser } from 'src/users/entities/individual-user.entity';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
+import { Chat } from 'src/message/entities/chat.entity';
 
 @Injectable()
 export class ContactService {
     constructor(
         @InjectRepository(Contact) private contactRepository: Repository<Contact>,
-        @InjectRepository(IndividualUser) private individualRepository: Repository<IndividualUser>
+        @InjectRepository(IndividualUser) private individualRepository: Repository<IndividualUser>,
+        @InjectRepository(Chat) private chatRepository: Repository<Chat>
     ) { }
 
     async getContact() { //Obtiene todos los contactos
@@ -52,14 +54,34 @@ export class ContactService {
             return new HttpException('Contact not found', HttpStatus.NOT_FOUND);
         }
 
+        const existingChatA = await this.chatRepository.findOne({
+            where: { senderUser: { id: userFound.id }, receivingUser: { id: userContactFound.id } }
+        });
+        const existingChatB = await this.chatRepository.findOne({
+            where: { senderUser: { id: userContactFound.id }, receivingUser: { id: userFound.id } }
+        });
+
+        let newChat = null;
+        if (!existingChatA && !existingChatB) {
+            newChat = this.chatRepository.create({
+                senderUser: userFound,
+                receivingUser: userContactFound
+            })
+            newChat=await this.chatRepository.save(newChat);
+        }else{
+              if(existingChatA){
+                newChat=existingChatA
+              }else{
+                newChat=existingChatB
+              }
+        }
         const newContact = this.contactRepository.create({
             nickname: userContactFound.name,
             contactId: createContact.contactId,
             individualuser: userFound,
             photo_url: userContactFound.photo_url,
         });
-
-        return { message: 'success', data: await this.contactRepository.save(newContact) };
+        return { message: 'success', data: { contact: await this.contactRepository.save(newContact), chat: newChat } };
     }
 
     //***** */

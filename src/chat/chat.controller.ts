@@ -23,6 +23,10 @@ export class ChatController {
   async getChatsBySenderUserId(@Param('userId') userId: number){
     return this.chatService.getChatsBySenderUserId(userId);
   }
+  @Get('users/:userId')
+  async getChatUserOwner(@Param('userId') userId:number){
+    return this.chatService.getAllChatsOwner(userId);
+  }
   //obtener los mensajes de un chat
   @Get(':id/messages')
   async getMessagesByChatId(@Param('id') id: number) {
