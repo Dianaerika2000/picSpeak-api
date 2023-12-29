@@ -176,7 +176,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if(receivingSocket) {  
       // En línea, emitimos 
       receivingSocket.emit('newMessage', savedMessage);
-  
+
+      // emitir notificación al receptor
+      const sender = await this.userService.findOne(message.userId);
+
+      receivingSocket.emit('newMessageNotification', {
+        type: 'message',
+        message: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url,
+        senderName: sender.name,
+        senderPhoto: sender.photo_url,
+      });
+
     } else {
       // No conectado, guardar evento en BD
   
