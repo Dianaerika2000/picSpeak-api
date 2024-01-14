@@ -51,9 +51,10 @@ export class UsersService {
     return this.individualRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     //revisar, local todo ok
-    return { user: this.individualRepository.findOne({ where: { id } }) };
+    return { user: await this.individualRepository.findOne({ where: { id } }) };
+    // return await this.individualRepository.findOne({ where: { id } });
   }
 
   async update(id: number, updateUserDto: UpdateProfileDto) {
