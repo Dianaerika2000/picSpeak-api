@@ -28,7 +28,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket, ...args: any[]) {
     const userId = client.handshake.query.userId;
-
     const user = await this.userService.findOne(+userId);
 
     // Agregar al namespace
@@ -42,8 +41,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Actualizar lista global
     this.userSocketsMap[onlineUser.userId] = onlineUser;
 
-    // Enviar mensajes offline
-    // await this.pushOfflineMessages(client);
+    try {
+      // obtener mensajes offline
+      const offlineMessages = await this.chatService.getOfflineMessages(user.id);
+
+      if(!offlineMessages || offlineMessages.length === 0) {
+        return; 
+      }
+
+      // Enviar mensajes
+      offlineMessages.forEach(message => {
+        client.emit('newMessage', message);
+      });
+
+    } catch (error) {
+      console.error('Error fetching offline messages: ', error);
+    }
 
     console.log(`list of users:  ${JSON.stringify(this.userSocketsMap)}`);
   }
@@ -84,6 +97,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!socketInfo) {
       // manejar error
       console.log('No existe un usuario conectado con ese id')
+      return false;
     }
 
     // Obtener el socket 
@@ -171,8 +185,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('newMessage', message);
 
     // Obtener socket del receptor
-    const receivingSocket: Socket = this.getReceivingUserSocket(receivingUserId);
-
+    const receivingSocket: Socket | false = this.getReceivingUserSocket(receivingUserId);
+    
     if(receivingSocket) {  
       // En línea, emitimos 
       receivingSocket.emit('newMessage', savedMessage);
@@ -187,16 +201,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         senderPhoto: sender.photo_url,
       });
 
-    } else {
+    }else {
       // No conectado, guardar evento en BD
-  
+      
       const offlineMessage = {
-        socketId: null,
-        message: savedMessage
+        senderId: message.userId, 
+        receiverId: receivingUserId,
+        content: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url, 
       }
 
       // Guardar en BD
-      // await this.chatService.saveOfflineMessage(offlineMessage); 
+      await this.chatService.saveOfflineMessage(offlineMessage); 
     }
   }
 

@@ -7,17 +7,23 @@ import { MessageService } from 'src/message/message.service';
 import { IndividualUser } from 'src/users/entities/individual-user.entity';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { In, LessThan, MoreThan, Repository } from 'typeorm';
+import { OfflineMessage } from './entity/offlineMessage.entity';
+import { OfflineMessageDto } from './dto/offlineMessage.dto';
 
 @Injectable()
 export class ChatService {
     constructor(
         @InjectRepository(Chat)
         private readonly chatRepository: Repository<Chat>,
+
         private readonly userService: UsersService,
+
         @InjectRepository(IndividualUser) private individualRepository: Repository<IndividualUser>,
         private readonly messageService: MessageService,
 
+        @InjectRepository(OfflineMessage)
+        private readonly offlineMessageRepository: Repository<OfflineMessage>,
     ) { }
 
     /**
@@ -241,6 +247,36 @@ export class ChatService {
         const results = await this.chatRepository.query(query, [userId]);
 
         return results;
+    }
+
+    async saveOfflineMessage(offlineMessage: OfflineMessageDto) {
+      const newOfflineMessage = this.offlineMessageRepository.create(offlineMessage);
+      return await this.offlineMessageRepository.save(newOfflineMessage);
+    }
+
+    async getOfflineMessages(userId: number) {
+      const limit = 50; // máximo a obtener
+
+      const since = new Date();
+      since.setDate(since.getDate() - 7);
+
+      const messages = await this.offlineMessageRepository.find({
+        where: {
+          receiverId: userId,
+          delivered: false,
+          createdAt: MoreThan(since) 
+        },
+        order: { createdAt: 'ASC' },
+        take: limit
+      });
+
+      // Marcar como entregados
+      await this.offlineMessageRepository.update(
+        {id: In(messages.map(m => m.id)) }, 
+        {delivered: true}  
+      );
+
+      return messages;
     }
 }
 

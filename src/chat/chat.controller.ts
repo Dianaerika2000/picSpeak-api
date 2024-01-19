@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { ApiTags } from "@nestjs/swagger";
+import { OfflineMessageDto } from "./dto/offlineMessage.dto";
 
 
 
@@ -31,5 +32,16 @@ export class ChatController {
   @Get(':id/messages')
   async getMessagesByChatId(@Param('id') id: number) {
     return this.chatService.getMessagesByChatId(id);
+  }
+
+  @Post('offline')
+  async createOfflineMessage(@Body() offlineMessage: OfflineMessageDto) {
+    console.log('offlineMessage', offlineMessage);
+    return this.chatService.saveOfflineMessage(offlineMessage);
+  }
+
+  @Get('offline/:userId')
+  async getOfflineMessages(@Param('userId') userId: number) {
+    return this.chatService.getOfflineMessages(userId);
   }
 }
