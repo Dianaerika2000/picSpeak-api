@@ -3,8 +3,6 @@ import { ChatService } from "./chat.service";
 import { ApiTags } from "@nestjs/swagger";
 import { OfflineMessageDto } from "./dto/offlineMessage.dto";
 
-
-
 @ApiTags('CHAT')
 @Controller('chat')
 export class ChatController {
@@ -24,10 +22,12 @@ export class ChatController {
   async getChatsBySenderUserId(@Param('userId') userId: number){
     return this.chatService.getChatsBySenderUserId(userId);
   }
+
   @Get('users/:userId')
   async getChatUserOwner(@Param('userId') userId:number){
     return this.chatService.getAllChatsOwner(userId);
   }
+
   //obtener los mensajes de un chat
   @Get(':id/messages')
   async getMessagesByChatId(@Param('id') id: number) {

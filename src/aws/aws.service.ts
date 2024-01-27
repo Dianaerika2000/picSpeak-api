@@ -84,16 +84,19 @@ export class AwsService {
 
     const command = new DetectModerationLabelsCommand( {
       Image: {
-        Bytes: photoBuffer.buffer,
+        Bytes: photoBuffer,
       },
     });
 
     try {
       const response = await rekognitionClient.send(command);
-      const resultLabels = response.ModerationLabels[0].Name;
-      return resultLabels;
+      if (response.ModerationLabels && response.ModerationLabels[0] && response.ModerationLabels[0].Name) {
+        return response.ModerationLabels[0].Name;
+      } else {
+        return 'No tiene contenido inapropiado';
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error de AWS REKOGNITION',error);
       throw new Error('Error detecting moderation labels.');
     }
   }

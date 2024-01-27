@@ -179,7 +179,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const { receivingUserId, message } = payload;
 
     // Save the message
-    const savedMessage = await this.chatService.sendMessage(message);
+    const savedMessage = await this.chatService.sendMessage(message, receivingUserId);
 
     // Emit the message to the sender
     client.emit('newMessage', message);
@@ -202,8 +202,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
     }else {
-      // No conectado, guardar evento en BD
-      
+      // No conectado, guardar evento en BD    
       const offlineMessage = {
         senderId: message.userId, 
         receiverId: receivingUserId,

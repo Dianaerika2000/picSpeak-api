@@ -2,12 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { Chat } from 'src/message/entities/chat.entity';
-import { Message } from 'src/message/entities/message.entity';
 import { MessageService } from 'src/message/message.service';
 import { IndividualUser } from 'src/users/entities/individual-user.entity';
-import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { In, LessThan, MoreThan, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { OfflineMessage } from './entity/offlineMessage.entity';
 import { OfflineMessageDto } from './dto/offlineMessage.dto';
 
@@ -36,8 +34,6 @@ export class ChatService {
         if (!senderUser || !receivingUser) {
             throw new Error('Usuario no encontrado');
         }
-
-        //Preguntar si existe un chat de a con b
 
         const newChat = this.chatRepository.create({
             fondo,
@@ -82,6 +78,7 @@ export class ChatService {
         `;
 
         const results = await this.chatRepository.query(query, [chatId]);
+        console.log('Messages',results)
 
         return results;
     }
@@ -95,10 +92,10 @@ export class ChatService {
             .getOne();
     }
 
-    async sendMessage(createMessageDto: CreateMessageDto) {
-        console.log('CHAT SERVICE', createMessageDto)
-        return await this.messageService.createMessage(createMessageDto);
+    async sendMessage(createMessageDto: CreateMessageDto, receiverId: number) {
+        return await this.messageService.createMessage(createMessageDto, receiverId);
     }
+
     //consulta para traer todos los chats de un usuario
     async getAllChatsOwner(userId: number) {
         const userFound = await this.individualRepository.findOne({ where: { id: userId } });
@@ -173,7 +170,7 @@ export class ChatService {
             chat_data
         JOIN 
             "individualUsers" ON chat_data.other_user_id = "individualUsers".id
-        JOIN
+        LEFT JOIN
             "nacionality" ON "individualUsers".nacionality_id = "nacionality".id
         JOIN
             user_language as other_user_language ON chat_data.other_user_id = other_user_language."user_id"
@@ -188,6 +185,7 @@ export class ChatService {
             ORDER BY 
             last_message.last_message_created_at DESC;  
     `;
+
         const results = await this.chatRepository.query(query, [userId]);
 
         return results;

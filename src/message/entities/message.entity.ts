@@ -14,6 +14,9 @@ export class Message {
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
+  @Column({ name: 'is_showing', default: true})
+  isShowing: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -26,9 +29,6 @@ export class Message {
   //TODO Connecto to Chat table
   @ManyToOne(() => Chat, (message) => message.messages)
   chat: Chat;
-
-  /* @OneToMany(() => Resource, (resources) => resources.message)
-  resources: Resource[]; */
 
   @OneToMany(() => Text, (text) => text.message)
   text?: Text[];

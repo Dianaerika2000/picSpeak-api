@@ -15,6 +15,7 @@ import { IndividualUser } from 'src/users/entities/individual-user.entity';
 @Module({
     imports: [TypeOrmModule.forFeature([InappropriateContentUser, InterestUser, LanguageUser, Language, User, IndividualUser, Nacionality, InappropriateContent, Interest])],
     controllers: [ConfigurationController],
-    providers: [ConfigurationService]
+    providers: [ConfigurationService],
+    exports: [ConfigurationService]
 })
 export class ConfigurationModule { }

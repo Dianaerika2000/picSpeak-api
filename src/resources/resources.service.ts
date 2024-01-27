@@ -28,31 +28,23 @@ export class ResourcesService {
       const base64Image = createResourceDto.pathDevice.replace(/^data:image\/[a-z]+;base64,/, '');
       const imageBuffer = Buffer.from(base64Image, 'base64');
 
-      const key = `${Date.now().toString()} - ${createResourceDto.pathDevice}`;
+      const key = `${Date.now().toString()}-${createResourceDto.pathDevice}`;
       const uploadImage = await this.awsService.uploadImageToS3(imageBuffer, key);
+      console.log('AWS RESOURCE', uploadImage)
 
       const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
-
-      /**
-       * El frontend se encarga de filtrar, si mostrar o no
-       */
 
       return this.imageRepository.create({
         pathDevice: uploadImage.photoUrl,
         url: uploadImage.photoUrl,
         content: labels.toString(),
       });
-    } else if (createResourceDto.type == 'T') {
-      //TODO: Make code for save message type text, the target_language se envia desde el front
-      
-     
+    } else if (createResourceDto.type == 'T') { 
       const translateText = await this.chatGptAiService.getModelAnswer({
         question: createResourceDto.textOrigin,
         origin_language: createResourceDto.languageOrigin,
         target_language: createResourceDto.languageTarget
       });
-
-      console.log('response GPT', translateText); 
 
       return this.textRepository.create({
         textOrigin: createResourceDto.textOrigin,
@@ -81,21 +73,16 @@ export class ResourcesService {
   async createImage(createResourceDto: CreateResourceDto) {
     const base64Image = createResourceDto.pathDevice.replace(/^data:image\/[a-z]+;base64,/, '');
     const imageBuffer = Buffer.from(base64Image, 'base64');
-
-    const key = `${Date.now().toString()} - ${createResourceDto.pathDevice}`;
+    const key = `${Date.now().toString()}-picspeak`;
     const uploadImage = await this.awsService.uploadImageToS3(imageBuffer, key);
 
     const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
-
-    /**
-     * El frontend se encarga de filtrar, si mostrar o no
-     */
 
     const image = this.imageRepository.create({
       url: uploadImage.photoUrl,
       pathDevice: uploadImage.photoUrl,
       content: labels.toString(),
-      type: 'Image'
+      type: 'I'
     });
 
     return await this.imageRepository.save(image);
