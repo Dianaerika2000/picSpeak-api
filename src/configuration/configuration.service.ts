@@ -249,6 +249,7 @@ export class ConfigurationService {
             //return "no hay user language";
         }
     }
+    
     //INTEREST USER
     async getInterestsUser(id: number) {
         const userFound = await this.individualUserRepository.findOne({ where: { id } });
@@ -284,6 +285,7 @@ export class ConfigurationService {
             return { message: "nothing" };
         }
     }
+
     async updateSelectInterestUser(id: number, interestUser: CreateInterestUserDto[]) {
         const promesaObtencion = [];
         const interestUserFound = await this.interestUserRepository.find({
@@ -363,19 +365,21 @@ export class ConfigurationService {
 
         return { message: "success" };
     }
+
     //INAPPROPRIATE CONTENT USER
     async getInappropriateContentUser(id: number) {
         const userFound = await this.individualUserRepository.findOne({ where: { id } });
         if (!userFound) {
             return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
         }
-       
+
         const inappropriateFound = await this.inappropriateContentUserRepository.find({
             where: { status: true, individualuser: { id } },
             relations: ['inappropiateContent'],
         })
         return inappropriateFound;
     }
+
     async createSelectInappropriateContentUser(id: number) {
         const promesaInappropriateContentUser = [];
         const inappropriateContent = await this.inappropriateContentRepository.find();

@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Resource } from 'src/resources/entities/resource.entity';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { UsersService } from 'src/users/users.service';
-import { ChatService } from 'src/chat/chat.service';
 import { ResourcesService } from 'src/resources/resources.service';
-import { Text } from 'src/resources/entities/text.entity';
-import { Image } from 'src/resources/entities/image.entity';
 import { Chat } from './entities/chat.entity';
+import { ConfigurationService } from 'src/configuration/configuration.service';
 
 @Injectable()
 export class MessageService {
@@ -20,18 +16,18 @@ export class MessageService {
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
     private individualUserService: UsersService,
-    //private chatService: ChatService,
     private resourceService: ResourcesService,
+    private configurationService: ConfigurationService,
   ) { }
 
-  async createMessage(createMessageDto: CreateMessageDto) {
-    console.log('LLEGA MESAGE', createMessageDto)
-
+  async createMessage(createMessageDto: CreateMessageDto, receiverId: number) {
     const { userId, chatId, resources } = createMessageDto;
+    console.log('Receiver Id', receiverId)
 
     // Obtener instancias del usuario y del chat
     const user = await this.individualUserService.findOne(userId);
-    const chat = await this.chatRepository.findOneBy({id: chatId});
+    const chat = await this.chatRepository.findOneBy({ id: chatId });
+    console.log('Message - Chat', chat);
 
     const images = resources.filter(resource => resource?.type === 'I');
     const texts = resources.filter(resource => resource?.type === 'T');
@@ -46,28 +42,39 @@ export class MessageService {
       text: await Promise.all(texts.map(text => this.resourceService.createText(text))),
       image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
     });
+    console.log('Message - Create message', message)
+
+    if (message.image && message.image.length > 0) {
+      // Obtener el content label de la imagen
+      const imageLabelContent = message.image[0].content;
+      console.log(imageLabelContent)
+
+      const content = await this.compareUserContent(receiverId, imageLabelContent);
+      message.isShowing = content ? false : true;
+    }
 
     // Guardar el mensaje en la base de datos
     return await this.messageRepository.save(message);
   }
 
-  create() {
-    return 'This action create message';
-  }
+  async compareUserContent(receiverId, contentLabelImage) {
+    try {
+      const inappropiateContents = await this.configurationService.getInappropriateContentUser(receiverId);
+      console.log('User Content Function', inappropiateContents)
 
-  findAll() {
-    return `This action returns all message`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
-
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+      if (Array.isArray(inappropiateContents)) {
+        for (const item of inappropiateContents) {
+          // Verificar si la propiedad "inappropiateContent" existe y contiene "original_name"
+          if (item.inappropiateContent && item.inappropiateContent.original_name) {
+            // Validar si contentLabelImage existe en la lista
+            if (contentLabelImage == item.inappropiateContent.original_name)
+              return true;
+          }
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error('Error al obtener contenido inapropiado del usuario:', error);
+    }
   }
 }
