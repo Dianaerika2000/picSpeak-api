@@ -75,6 +75,7 @@ export class ChatService {
             LEFT JOIN public.text tx on tx."messageId" = ms."id"
 	        LEFT JOIN public.image im on im."messageId" = ms."id"
             WHERE "chatId" = $1
+            ORDER BY ms."created_at" ASC;
         `;
 
         const results = await this.chatRepository.query(query, [chatId]);

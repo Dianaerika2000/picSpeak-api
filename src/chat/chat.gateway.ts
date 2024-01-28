@@ -182,7 +182,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const savedMessage = await this.chatService.sendMessage(message, receivingUserId);
 
     // Emit the message to the sender
-    client.emit('newMessage', message);
+    client.emit('newMessage', savedMessage);
 
     // Obtener socket del receptor
     const receivingSocket: Socket | false = this.getReceivingUserSocket(receivingUserId);
