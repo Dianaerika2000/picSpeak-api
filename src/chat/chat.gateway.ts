@@ -196,7 +196,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       receivingSocket.emit('newMessageNotification', {
         type: 'message',
-        message: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url,
+        message: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url || savedMessage.audio[0]?.translatedAudioUrl,
         senderName: sender.name,
         senderPhoto: sender.photo_url,
       });
@@ -207,7 +207,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const offlineMessage = {
         senderId: message.userId, 
         receiverId: receivingUserId,
-        content: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url, 
+        content: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url ||savedMessage.audio[0]?.translatedAudioUrl, 
       }
 
       // Guardar en BD

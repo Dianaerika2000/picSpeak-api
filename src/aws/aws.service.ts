@@ -97,4 +97,34 @@ export class AwsService {
       throw new Error('Error detecting moderation labels.');
     }
   }
+
+  async uploadAudioToS3( audioBuffer: Buffer, name: string = 'default') {
+
+    const s3Bucket = this.configService.get('AWS_BUCKET');
+
+    // Step 1: Connects to AWS S3 service
+    const s3Client = new S3Client({
+      region: this.configService.get('AWS_DEFAULT_REGION'),
+      credentials: {
+        accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+      },
+    });
+
+    // Step 2: Subir el audio a S3
+    const s3Object = await s3Client.send(
+      new PutObjectCommand({
+        Bucket: s3Bucket,
+        Key: `${name}.mp3`,
+        Body: audioBuffer,
+        ContentType: 'audio/mp3',
+      }),
+    );
+    
+    const s3ObjectUrl = `https://${s3Bucket}.s3.amazonaws.com/${name}.mp3`;
+  
+    return {
+      audioUrl: s3ObjectUrl
+    };
+  }
 }

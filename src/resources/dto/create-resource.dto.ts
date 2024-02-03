@@ -16,4 +16,8 @@ export class CreateResourceDto {
 
     @IsOptional()
     languageTarget?: string;
+
+    @IsOptional()
+    @IsString()
+    url?: string;
 }

@@ -27,5 +27,11 @@ export class AwsController {
     }
   }
 
-
+  @Post('upload/audio')
+  @UseInterceptors(FileInterceptor('audio'))
+  uploadAudio(
+    @UploadedFile() audio: Express.Multer.File,
+    ) {
+    return this.awsService.uploadAudioToS3(audio.buffer);
+  }
 }

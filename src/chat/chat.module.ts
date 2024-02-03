@@ -7,12 +7,14 @@ import { UsersModule } from 'src/users/users.module';
 import { ChatController } from './chat.controller';
 import { MessageModule } from 'src/message/message.module';
 import { OfflineMessage } from './entity/offlineMessage.entity';
+import { GoogleCloudModule } from 'src/google-cloud/google-cloud.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Chat, OfflineMessage]),
     UsersModule,
     MessageModule,
+    GoogleCloudModule,
   ],
   controllers: [ChatController],
   providers: [ChatGateway, ChatService],

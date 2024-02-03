@@ -10,6 +10,7 @@ import { UsersService } from 'src/users/users.service';
 import { In, LessThan, MoreThan, Repository } from 'typeorm';
 import { OfflineMessage } from './entity/offlineMessage.entity';
 import { OfflineMessageDto } from './dto/offlineMessage.dto';
+import { GoogleCloudService } from '../google-cloud/google-cloud.service';
 
 @Injectable()
 export class ChatService {
@@ -24,6 +25,8 @@ export class ChatService {
 
         @InjectRepository(OfflineMessage)
         private readonly offlineMessageRepository: Repository<OfflineMessage>,
+
+        private readonly GoogleCloudService: GoogleCloudService,
     ) { }
 
     /**
@@ -95,7 +98,19 @@ export class ChatService {
             .getOne();
     }
 
-    async sendMessage(createMessageDto: CreateMessageDto) {
+    async sendMessage(createMessageDto: CreateMessageDto, audioFile?: Buffer) {
+        const lenguageCode = createMessageDto.resources[0]?.languageOrigin;
+        
+        if(audioFile) {
+            const { transcription, audioUrl } = await this.GoogleCloudService.getTranscription(audioFile, lenguageCode);
+
+            createMessageDto.resources[0].textOrigin = transcription;
+            createMessageDto.resources[0].type = 'A';
+            createMessageDto.resources[0].url = audioUrl;
+
+            console.log('TRANSCRIPTION', transcription);
+        }
+
         console.log('CHAT SERVICE', createMessageDto)
         return await this.messageService.createMessage(createMessageDto);
     }

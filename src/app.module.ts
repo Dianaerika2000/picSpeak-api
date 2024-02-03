@@ -19,6 +19,7 @@ import { ContactModule } from './contact/contact.module';
 import { StatusModule } from './status/status.module';
 import { StatusIndividualUserModule } from './status-individual-user/status-individual-user.module';
 import { AwsModule } from './aws/aws.module';
+import { GoogleCloudModule } from './google-cloud/google-cloud.module';
 
 @Module({
   imports: [
@@ -60,7 +61,8 @@ import { AwsModule } from './aws/aws.module';
     ContactModule,
     StatusModule,
     StatusIndividualUserModule,
-    AwsModule
+    AwsModule,
+    GoogleCloudModule
   ],
   controllers: [AppController],
   providers: [AppService],
