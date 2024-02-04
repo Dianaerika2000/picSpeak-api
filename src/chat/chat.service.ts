@@ -96,7 +96,7 @@ export class ChatService {
             .getOne();
     }
 
-    async sendMessage(createMessageDto: CreateMessageDto, audioFile?: Buffer, receiverId: number) {
+    async sendMessage(createMessageDto: CreateMessageDto, receiverId: number, audioFile?: Buffer) {
         const lenguageCode = createMessageDto.resources[0]?.languageOrigin;
         
         if(audioFile) {
