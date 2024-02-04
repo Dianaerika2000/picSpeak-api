@@ -38,11 +38,11 @@ export class ConfigurationController {
     selectMatternLanguageUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectMatternLanguage: SelectNacionalityMatternLanguageUserDto) {
         return this.configurationService.selectMatternLanguage(id, newSelectMatternLanguage);
     }
-      //Seleccionar inicial de language y nacionality
+    //Seleccionar inicial de language y nacionality
     @Post('user/:id/language-nacionality')
-    selectLanguageNationalityUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectNacionalityLanguageUser:SelectNacionalityLanguageUserDto) {
-        
-      // return newSelectNacionalityLanguageUser;
+    selectLanguageNationalityUser(@Param('id', ParseIntPipe) id: number, @Body() newSelectNacionalityLanguageUser: SelectNacionalityLanguageUserDto) {
+
+        // return newSelectNacionalityLanguageUser;
         // const language_id = parseInt(newSelectNacionalityLanguageUser.language_id, 10);
         // const nationality_id = parseInt(newSelectNacionalityLanguageUser.nationality_id, 10);
         // //return language_id;
@@ -80,24 +80,24 @@ export class ConfigurationController {
         return this.configurationService.createSelectInappropriateContentUser(id);
     }
     //********************USER INTEREST **********************
-     //Obtiene de un usuario todos los intereses que estan con status en true
-     @Get('/interest-user/:id')
-     getInterestsUser(@Param('id', ParseIntPipe) id: number) {
-         return this.configurationService.getInterestsUser(id);
-     }
-     //actualiza los intereses seleccionados por un usuario
-     @Post('user/:id/interest-user') //para actualizar los contenidos inapropiados seleccionados
-     updateSelectInterestUser(@Param('id', ParseIntPipe) id: number, @Body() newInterestUser: CreateInterestUserDto[]) {
-         return this.configurationService.updateSelectInterestUser(id, newInterestUser);
-     }
-     //actualiza los intereses seleccionados por un usuario
-     @Post('user/:id/interests-user') //para actualizar los contenidos inapropiados seleccionados
-     updateSelectInterestsUser(@Param('id', ParseIntPipe) id: number, @Body() newInterestUser: string[]) {
-         return this.configurationService.updateSelectInterestsUser(id, newInterestUser);
-     }
-     //crea la relación por defecto entre todos los intereses y un usuario 
-     @Post('/interest-user/default/:id')
-     createSelectInterestUser(@Param('id', ParseIntPipe) id: number) {
-         return this.configurationService.createSelectInterestUser(id);
-     }
+    //Obtiene de un usuario todos los intereses que estan con status en true
+    @Get('/interest-user/:id')
+    getInterestsUser(@Param('id', ParseIntPipe) id: number) {
+        return this.configurationService.getInterestsUser(id);
+    }
+    //actualiza los intereses seleccionados por un usuario
+    @Post('user/:id/interest-user') //para actualizar los contenidos inapropiados seleccionados
+    updateSelectInterestUser(@Param('id', ParseIntPipe) id: number, @Body() newInterestUser: CreateInterestUserDto[]) {
+        return this.configurationService.updateSelectInterestUser(id, newInterestUser);
+    }
+    //actualiza los intereses seleccionados por un usuario
+    @Post('user/:id/interests-user') //para actualizar los contenidos inapropiados seleccionados
+    updateSelectInterestsUser(@Param('id', ParseIntPipe) id: number, @Body() newInterestUser: string[]) {
+        return this.configurationService.updateSelectInterestsUser(id, newInterestUser);
+    }
+    //crea la relación por defecto entre todos los intereses y un usuario 
+    @Post('/interest-user/default/:id')
+    createSelectInterestUser(@Param('id', ParseIntPipe) id: number) {
+        return this.configurationService.createSelectInterestUser(id);
+    }
 }

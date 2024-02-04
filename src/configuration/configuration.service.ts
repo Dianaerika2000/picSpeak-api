@@ -133,9 +133,9 @@ export class ConfigurationService {
         return { message: 'success' };
     }
     async getLanguagesUser(id: number) {
-        const userFound = await this.userRepository.findOne({ where: { id } });
+        const userFound = await this.individualUserRepository.findOne({ where: { id } });
         if (!userFound) {
-            return new HttpException('Usuario no encontrada', HttpStatus.NOT_FOUND);
+            return new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
         }
 
         const languageUserFound = await this.languageUserRepository.find({
