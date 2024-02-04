@@ -31,6 +31,7 @@ export class MessageService {
 
     const images = resources.filter(resource => resource?.type === 'I');
     const texts = resources.filter(resource => resource?.type === 'T');
+    const audios = resources.filter(resource => resource?.type === 'A');
 
     // Crear el mensaje
     const message = this.messageRepository.create({
@@ -41,6 +42,7 @@ export class MessageService {
       updatedAt: new Date(),
       text: await Promise.all(texts.map(text => this.resourceService.createText(text))),
       image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
+      audio: await Promise.all(audios.map(audio => this.resourceService.createAudio(audio))),
     });
     console.log('Message - Create message', message)
 

@@ -8,18 +8,27 @@ import { Text } from './entities/text.entity';
 import { AwsService } from 'src/aws/aws.service';
 import { ChatGptAiService } from 'src/chat-gpt-ai/chat-gpt-ai.service';
 import { CreateTextDto } from './dto/create-text.dto';
+import { GoogleCloudService } from '../google-cloud/google-cloud.service';
+import { Audio } from './entities/audio.entity';
 
 @Injectable()
 export class ResourcesService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
+    
     @InjectRepository(Text)
     private readonly textRepository: Repository<Text>,
+    
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
+    
+    @InjectRepository(Audio)
+    private readonly audioRepository: Repository<Audio>,
+
     private readonly awsService: AwsService,
     private readonly chatGptAiService: ChatGptAiService,
+    private readonly googleCloudService: GoogleCloudService
   ) { }
 
   async create(createResourceDto: CreateResourceDto) {
@@ -87,6 +96,28 @@ export class ResourcesService {
     });
 
     return await this.imageRepository.save(image);
+  }
+
+  async createAudio(createResourceDto: CreateResourceDto){
+    const { textOrigin, url, languageOrigin, languageTarget } = createResourceDto;
+
+    const translateText = await this.chatGptAiService.getModelAnswer({
+      question: textOrigin,
+      origin_language: languageOrigin,
+      target_language: languageTarget
+    });
+
+    const translateText2 = "Esta es una prueba desde el backend chat.service.ts";
+
+    const translateAudioUrl = await this.googleCloudService.textToSpeech(translateText2, languageTarget, 'mp3');
+    
+    const audio = this.audioRepository.create({
+      type: 'Audio',
+      originalAudioUrl: url,
+      translatedAudioUrl: translateAudioUrl.audioUrl,
+    });
+
+    return await this.audioRepository.save(audio);
   }
 
   findAll() {

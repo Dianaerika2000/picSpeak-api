@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { ApiTags } from "@nestjs/swagger";
 import { OfflineMessageDto } from "./dto/offlineMessage.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags('CHAT')
 @Controller('chat')
@@ -43,5 +44,14 @@ export class ChatController {
   @Get('offline/:userId')
   async getOfflineMessages(@Param('userId') userId: number) {
     return this.chatService.getOfflineMessages(userId);
+  }
+
+  @Post('message/audio')
+  @UseInterceptors(FileInterceptor('audioFile'))
+  async createAudioMessage(
+    @UploadedFile() audioFile: Express.Multer.File,
+    @Body() message: any
+  ) {
+    return this.chatService.sendMessage(message, audioFile.buffer);
   }
 }
