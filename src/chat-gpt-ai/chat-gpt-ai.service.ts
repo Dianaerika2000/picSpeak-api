@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Configuration, CreateCompletionRequest, OpenAIApi } from "openai";
 import { GetAiModelAnswer } from './model/get-ai-model-answe';
 
-const DEFAULT_MODEL_ID = "text-davinci-003"//"text-davinci-003"
+const DEFAULT_MODEL_ID = "gpt-3.5-turbo-instruct" //"text-davinci-003"
 const DEFAULT_TEMPERATURE = 0.9
 const DEFAULT_ORIGINAL_LANGUAGE = "Español"
 const DEFAULT_LANGUAGE = "Inglés"
