@@ -52,6 +52,6 @@ export class ChatController {
     @UploadedFile() audioFile: Express.Multer.File,
     @Body() message: any
   ) {
-    return this.chatService.sendMessage(message, audioFile.buffer);
+    // return this.chatService.sendMessage(message, audioFile.buffer);
   }
 }
