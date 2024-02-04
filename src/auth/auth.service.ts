@@ -30,8 +30,8 @@ export class AuthService {
         birthDate,
         photo_url }: RegisterDto) {
 
-        const base64ToString = photo_url.toString('base64');
-        const base64Image = base64ToString.replace(/^data:image\/[a-z]+;base64,/, '');
+        //const base64ToString = photo_url.toString('base64');
+        const base64Image = photo_url.replace(/^data:image\/[a-z]+;base64,/, '');
         const imageBuffer = Buffer.from(base64Image, 'base64'); 
         
         const existUser = await this.usersService.findOneByEmail(email);
@@ -52,7 +52,7 @@ export class AuthService {
             username,
             birthDate,
             email,
-            photo_url: 'photo',//profilePhotoUrl,
+            photo_url: profilePhotoUrl,
             password: hashedPassword,
             activationToken: token,
             type: 'individual'

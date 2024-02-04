@@ -28,5 +28,5 @@ export class RegisterDto {
 
     @IsOptional()
     @IsBase64()
-    photo_url?: Buffer;
+    photo_url?: string;
 }
