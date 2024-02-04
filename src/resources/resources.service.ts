@@ -59,11 +59,12 @@ export class ResourcesService {
       origin_language: CreateTextDto.languageOrigin,
       target_language: CreateTextDto.languageTarget
     });
+    console.log('TRANSALATED TEXT', translateText)
 
     const text = this.textRepository.create({
       textOrigin: CreateTextDto.textOrigin,
-      // textTranslate: translateText[0].text,
-      textTranslate: 'inapropiado',
+      textTranslate: translateText[0].text,
+      //textTranslate: 'inapropiado',
       type: 'Text',
     });
 
