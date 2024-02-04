@@ -2,12 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateMessageDto } from 'src/message/dto/create-message.dto';
 import { Chat } from 'src/message/entities/chat.entity';
-import { Message } from 'src/message/entities/message.entity';
 import { MessageService } from 'src/message/message.service';
 import { IndividualUser } from 'src/users/entities/individual-user.entity';
-import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { In, LessThan, MoreThan, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { OfflineMessage } from './entity/offlineMessage.entity';
 import { OfflineMessageDto } from './dto/offlineMessage.dto';
 import { GoogleCloudService } from '../google-cloud/google-cloud.service';
@@ -39,8 +37,6 @@ export class ChatService {
         if (!senderUser || !receivingUser) {
             throw new Error('Usuario no encontrado');
         }
-
-        //Preguntar si existe un chat de a con b
 
         const newChat = this.chatRepository.create({
             fondo,
@@ -82,9 +78,11 @@ export class ChatService {
             LEFT JOIN public.text tx on tx."messageId" = ms."id"
 	        LEFT JOIN public.image im on im."messageId" = ms."id"
             WHERE "chatId" = $1
+            ORDER BY ms."created_at" ASC;
         `;
 
         const results = await this.chatRepository.query(query, [chatId]);
+        console.log('Messages',results)
 
         return results;
     }
@@ -98,7 +96,7 @@ export class ChatService {
             .getOne();
     }
 
-    async sendMessage(createMessageDto: CreateMessageDto, audioFile?: Buffer) {
+    async sendMessage(createMessageDto: CreateMessageDto, audioFile?: Buffer, receiverId: number) {
         const lenguageCode = createMessageDto.resources[0]?.languageOrigin;
         
         if(audioFile) {
@@ -111,9 +109,9 @@ export class ChatService {
             console.log('TRANSCRIPTION', transcription);
         }
 
-        console.log('CHAT SERVICE', createMessageDto)
-        return await this.messageService.createMessage(createMessageDto);
+        return await this.messageService.createMessage(createMessageDto, receiverId);
     }
+
     //consulta para traer todos los chats de un usuario
     async getAllChatsOwner(userId: number) {
         const userFound = await this.individualRepository.findOne({ where: { id: userId } });
@@ -188,7 +186,7 @@ export class ChatService {
             chat_data
         JOIN 
             "individualUsers" ON chat_data.other_user_id = "individualUsers".id
-        JOIN
+        LEFT JOIN
             "nacionality" ON "individualUsers".nacionality_id = "nacionality".id
         JOIN
             user_language as other_user_language ON chat_data.other_user_id = other_user_language."user_id"
@@ -203,6 +201,7 @@ export class ChatService {
             ORDER BY 
             last_message.last_message_created_at DESC;  
     `;
+
         const results = await this.chatRepository.query(query, [userId]);
 
         return results;

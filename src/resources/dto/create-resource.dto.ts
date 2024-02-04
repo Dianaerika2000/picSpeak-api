@@ -1,10 +1,10 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsBase64, IsOptional, IsString } from "class-validator";
 
 export class CreateResourceDto {
     @IsString()
     type: string;
 
-    @IsString()
+    @IsBase64()
     @IsOptional()
     pathDevice?: string;
 

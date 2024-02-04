@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsDateString, IsEmail, IsOptional, IsString, MinLength } from "class-validator";
+import { IsBase64, IsDateString, IsEmail, IsOptional, IsString, MinLength } from "class-validator";
 
 export class RegisterDto {
     @Transform(({value}) => value.trim())
@@ -27,6 +27,6 @@ export class RegisterDto {
     password: string;
 
     @IsOptional()
-    @IsString()
-    photo_url?: Buffer;
+    @IsBase64()
+    photo_url?: string;
 }
