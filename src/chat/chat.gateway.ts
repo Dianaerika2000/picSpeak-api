@@ -45,8 +45,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // obtener mensajes offline
       const offlineMessages = await this.chatService.getOfflineMessages(user.id);
 
-      if(!offlineMessages || offlineMessages.length === 0) {
-        return; 
+      if (!offlineMessages || offlineMessages.length === 0) {
+        return;
       }
 
       // Enviar mensajes
@@ -75,14 +75,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // async pushOfflineMessages(socket: Socket) {
   //   // Obtener usuario 
   //   const user = socket.data.user;
-    
+
   //   if(!user) {
   //     return; 
   //   }
-  
+
   //   // Query mensajes offline
   //   const offlineMessages = await this.chatService.findOfflineMessages(user.userId);
-  
+
   //   // Enviar cada mensaje
   //   offlineMessages.forEach(message => {
   //     socket.emit('newMessage', message);  
@@ -90,7 +90,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // }
 
   getReceivingUserSocket(userId: number) {
-    
+
     // Encontrar el socketId mapeado
     const socketInfo = this.userSocketsMap[userId];
 
@@ -174,20 +174,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * @param payload 
    */
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, payload: { receivingUserId: number, message: CreateMessageDto }) {
+  async sendMessage(client: Socket, payload: { receivingUserId: number, message: CreateMessageDto }, audioFile?: Buffer) {
 
     const { receivingUserId, message } = payload;
+    let savedMessage;
 
-    // Save the message
-    const savedMessage = await this.chatService.sendMessage(message, receivingUserId);
-
-    // Emit the message to the sender
-    client.emit('newMessage', savedMessage);
+    if (message.resources[0].type !== 'A' || !audioFile) {
+      // Save the message
+      savedMessage = await this.chatService.sendMessage(message, receivingUserId);
+    } else {
+      // Save the message
+      savedMessage = await this.chatService.sendMessage(message, receivingUserId, audioFile);
+    }
 
     // Obtener socket del receptor
     const receivingSocket: Socket | false = this.getReceivingUserSocket(receivingUserId);
-    
-    if(receivingSocket) {  
+
+    if (receivingSocket) {
       // En línea, emitimos 
       receivingSocket.emit('newMessage', savedMessage);
 
@@ -201,16 +204,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         senderPhoto: sender.photo_url,
       });
 
-    }else {
+    } else {
       // No conectado, guardar evento en BD    
       const offlineMessage = {
-        senderId: message.userId, 
+        senderId: message.userId,
         receiverId: receivingUserId,
-        content: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url ||savedMessage.audio[0]?.translatedAudioUrl, 
+        content: savedMessage.text[0]?.textOrigin || savedMessage.image[0]?.url || savedMessage.audio[0]?.translatedAudioUrl,
       }
 
       // Guardar en BD
-      await this.chatService.saveOfflineMessage(offlineMessage); 
+      await this.chatService.saveOfflineMessage(offlineMessage);
     }
   }
 
