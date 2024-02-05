@@ -187,6 +187,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       savedMessage = await this.chatService.sendMessage(message, receivingUserId, audioFile);
     }
 
+    // Emit the message to the sender
+    client.emit('newMessage', savedMessage);
+    console.log('SAVED MESSAGE', savedMessage)
+
     // Obtener socket del receptor
     const receivingSocket: Socket | false = this.getReceivingUserSocket(receivingUserId);
 
@@ -203,7 +207,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         senderName: sender.name,
         senderPhoto: sender.photo_url,
       });
-
     } else {
       // No conectado, guardar evento en BD    
       const offlineMessage = {

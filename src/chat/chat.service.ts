@@ -77,6 +77,7 @@ export class ChatService {
             SELECT * FROM public.message ms
             LEFT JOIN public.text tx on tx."messageId" = ms."id"
 	        LEFT JOIN public.image im on im."messageId" = ms."id"
+            LEFT JOIN public.audio aud on aud."messageId" = ms."id"
             WHERE "chatId" = $1
             ORDER BY ms."created_at" ASC;
         `;
