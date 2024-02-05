@@ -174,9 +174,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * @param payload 
    */
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, payload: { receivingUserId: number, message: CreateMessageDto }, audioFile?: Buffer) {
+  async sendMessage(client: Socket, payload: { receivingUserId: number, message: CreateMessageDto, audioFile?: Buffer }) {
 
-    const { receivingUserId, message } = payload;
+    const { receivingUserId, message, audioFile } = payload;
     let savedMessage;
 
     if (message.resources[0].type !== 'A' || !audioFile) {
