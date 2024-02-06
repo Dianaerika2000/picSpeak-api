@@ -11,8 +11,9 @@ export class GoogleCloudService {
     private readonly awsService: AwsService,
   ) {}
   
-  async getTranscription(FileAudio: Buffer, languageCode: string) {
+  async getTranscription(FileAudio: Buffer, language: string) {
     const audioName = `audio-ORIGINAL-${Date.now()}`;
+    const lenguageCode = this.getLenguageCodeSpeechToText(language);
 
     const speech = require('@google-cloud/speech');
     const client = new speech.SpeechClient();
@@ -25,7 +26,7 @@ export class GoogleCloudService {
     const config = {
       encoding: 'MP3',
       sampleRateHertz: 16000,
-      languageCode: 'en-US',
+      languageCode: lenguageCode,
     };
 
     const request = {
@@ -47,8 +48,9 @@ export class GoogleCloudService {
     };
   }
 
-  async textToSpeech(text: string, lenguage: string, outputFile: string){
+  async textToSpeech(text: string, lenguage: string){
     const audioName = `audio-TRANSLATED-${Date.now()}`;
+    const lenguageCode = this.getLenguageCodeForTextToSpeech(lenguage);
 
     const fs = require('fs');
     const util = require('util');
@@ -61,17 +63,10 @@ export class GoogleCloudService {
     const request = {
       input: {text: text},
       // Select the language and SSML voice gender (optional)
-      voice: {languageCode: 'es-US', ssmlGender: 'NEUTRAL'},
+      voice: {languageCode: lenguageCode, ssmlGender: 'NEUTRAL'},
       // select the type of audio encoding
       audioConfig: {audioEncoding: 'MP3'},
     };
-
-    // Performs the text-to-speech request
-    // const [response] = await client.synthesizeSpeech(request);
-    // // Write the binary audio content to a local file
-    // const writeFile = util.promisify(fs.writeFile);
-    // await writeFile('output.mp3', response.audioContent, 'binary');
-    // console.log('Audio content written to file: output.mp3');
 
     // Make the API call to synthesize the provided text
     const [response] = await client.synthesizeSpeech(request);
@@ -79,13 +74,56 @@ export class GoogleCloudService {
 
     const { audioUrl } = await this.awsService.uploadAudioToS3(response.audioContent, audioName);
 
-    // Write the generated audio content to the specified output file
-    // fs.writeFileSync(outputFile,response.audioContent,'binary');
-
-    // Return the output file path
     return {
       audioUrl,
     };
+  }
+
+  
+  getLenguageCodeForTextToSpeech(lenguage: string) {
+    //mapa de idiomas
+    const languages = {
+      'ingles': 'en-US',
+      'español': 'es-US',
+      'frances': 'fr-FR',
+      'aleman': 'de-DE',
+      'italiano': 'it-IT',
+      'portugues': 'pt-BR',
+      'japones': 'ja-JP',
+      'chino': 'zh-CN',
+      'coreano': 'ko-KR',
+      'ruso': 'ru-RU',
+      'arabe': 'ar-SA',
+      'hebreo': 'he-IL',
+      'turco': 'tr-TR',
+      'hindi': 'hi-IN',
+      'filipino': 'fil-PH',
+    };
+
+    return languages[lenguage.toLocaleLowerCase()];
+  }
+
+  getLenguageCodeSpeechToText(lenguage: string) {
+    //mapa de idiomas
+    const languages = {
+      'ingles': 'en-US',
+      'español': 'es-ES',
+      'frances': 'fr-FR',
+      'aleman': 'de-DE',
+      'italiano': 'it-IT',
+      'portugues': 'pt-BR',
+      'japones': 'ja-JP',
+      'chino': 'zh-CN',
+      'coreano': 'ko-KR',
+      'ruso': 'ru-RU',
+      'arabe': 'ar-SA',
+      'hebreo': 'he-IL',
+      'turco': 'tr-TR',
+      'hindi': 'hi-IN',
+      'filipino': 'fil-PH',
+    };
+
+    return languages[lenguage.toLocaleLowerCase()];
   }
 
   async translateText(text: string, target: string){

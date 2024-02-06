@@ -109,9 +109,7 @@ export class ResourcesService {
       target_language: languageTarget
     });
 
-    const translateText2 = "Esta es una prueba desde el backend chat.service.ts";
-
-    const translateAudioUrl = await this.googleCloudService.textToSpeech(translateText2, languageTarget, 'mp3');
+    const translateAudioUrl = await this.googleCloudService.textToSpeech(translateText, languageTarget);
 
     const audio = this.audioRepository.create({
       type: 'Audio',

@@ -98,10 +98,10 @@ export class ChatService {
     }
 
     async sendMessage(createMessageDto: CreateMessageDto, receiverId: number, audioFile?: Buffer) {
-        const lenguageCode = createMessageDto.resources[0]?.languageOrigin;
+        const languageOrigin = createMessageDto.resources[0]?.languageOrigin;
         
         if(audioFile) {
-            const { transcription, audioUrl } = await this.GoogleCloudService.getTranscription(audioFile, lenguageCode);
+            const { transcription, audioUrl } = await this.GoogleCloudService.getTranscription(audioFile, languageOrigin);
 
             createMessageDto.resources[0].textOrigin = transcription;
             createMessageDto.resources[0].type = 'A';
