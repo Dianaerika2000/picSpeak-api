@@ -68,12 +68,21 @@ export class MessageService {
         for (const item of inappropiateContents) {
           // Verificar si la propiedad "inappropiateContent" existe y contiene "original_name"
           if (item.inappropiateContent && item.inappropiateContent.original_name) {
-            // Validar si contentLabelImage existe en la lista
-            if (contentLabelImage == item.inappropiateContent.original_name)
+            // Dividir las cadenas en palabras
+            const contentLabelWords = contentLabelImage.split(' ');
+            const originalNameWords = item.inappropiateContent.original_name.split(' ');
+      
+            // Verificar si hay alguna coincidencia entre las palabras
+            const hasIntersection = contentLabelWords.some(word => originalNameWords.includes(word));
+      
+            // Si hay coincidencia, retornar true
+            if (hasIntersection) {
               return true;
+            }
           }
         }
       }
+      
       return false;
     } catch (error) {
       console.error('Error al obtener contenido inapropiado del usuario:', error);
