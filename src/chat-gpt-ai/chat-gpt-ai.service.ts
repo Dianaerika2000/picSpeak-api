@@ -52,6 +52,7 @@ export class ChatGptAiService {
                 return data.choices
             }
 
+            console.log('RESPONSE', response.data)
             return response.data
 
         } catch (error) {

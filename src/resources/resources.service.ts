@@ -16,13 +16,13 @@ export class ResourcesService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
-    
+
     @InjectRepository(Text)
     private readonly textRepository: Repository<Text>,
-    
+
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
-    
+
     @InjectRepository(Audio)
     private readonly audioRepository: Repository<Audio>,
 
@@ -48,7 +48,7 @@ export class ResourcesService {
         url: uploadImage.photoUrl,
         content: labels.toString(),
       });
-    } else if (createResourceDto.type == 'T') { 
+    } else if (createResourceDto.type == 'T') {
       const translateText = await this.chatGptAiService.getModelAnswer({
         question: createResourceDto.textOrigin,
         origin_language: createResourceDto.languageOrigin,
@@ -68,11 +68,13 @@ export class ResourcesService {
       origin_language: CreateTextDto.languageOrigin,
       target_language: CreateTextDto.languageTarget
     });
-    console.log('TRANSALATED TEXT', translateText)
+    // Limpia el texto eliminando comillas y espacios adicionales
+    const cleanedTranslateText = translateText[0].text.replace(/["'\n]+/g, ' ').trim();
+    console.log('CLEANED TRANSLATED TEXT', cleanedTranslateText);
 
     const text = this.textRepository.create({
       textOrigin: CreateTextDto.textOrigin,
-      textTranslate: translateText[0].text,
+      textTranslate: cleanedTranslateText,
       //textTranslate: 'inapropiado',
       type: 'Text',
     });
@@ -98,7 +100,7 @@ export class ResourcesService {
     return await this.imageRepository.save(image);
   }
 
-  async createAudio(createResourceDto: CreateResourceDto){
+  async createAudio(createResourceDto: CreateResourceDto) {
     const { textOrigin, url, languageOrigin, languageTarget } = createResourceDto;
 
     const translateText = await this.chatGptAiService.getModelAnswer({
@@ -110,7 +112,7 @@ export class ResourcesService {
     const translateText2 = "Esta es una prueba desde el backend chat.service.ts";
 
     const translateAudioUrl = await this.googleCloudService.textToSpeech(translateText2, languageTarget, 'mp3');
-    
+
     const audio = this.audioRepository.create({
       type: 'Audio',
       originalAudioUrl: url,
@@ -125,14 +127,14 @@ export class ResourcesService {
   }
 
   findOne(id: number) {
-    return this.resourceRepository.findOne({ where: {id} });
+    return this.resourceRepository.findOne({ where: { id } });
   }
 
   async remove(id: number) {
-    const resourceToRemove = await this.resourceRepository.findOne({ where: {id} });
+    const resourceToRemove = await this.resourceRepository.findOne({ where: { id } });
 
     if (!resourceToRemove) {
-      throw new NotFoundException(`Resource with ID ${id} not found`);   
+      throw new NotFoundException(`Resource with ID ${id} not found`);
     }
     return this.resourceRepository.remove(resourceToRemove);
   }
