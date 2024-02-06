@@ -17,7 +17,7 @@ export class GoogleCloudController {
   @Post('text-to-speech')
   async textToSpeech( @Body('text') text: string, @Body('language') language: string){
     console.log(text, language);
-    return this.googleCloudService.textToSpeech(text, 'en-US', 'output.mp3');
+    return this.googleCloudService.textToSpeech(text, 'en-US');
   }
   
 }
