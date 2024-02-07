@@ -108,8 +108,10 @@ export class ResourcesService {
       origin_language: languageOrigin,
       target_language: languageTarget
     });
+    // Limpia el texto eliminando comillas y espacios adicionales
+    const cleanedTranslateText = translateText[0].text.replace(/["'\n]+/g, ' ').trim();
 
-    const translateAudioUrl = await this.googleCloudService.textToSpeech(translateText, languageTarget);
+    const translateAudioUrl = await this.googleCloudService.textToSpeech(cleanedTranslateText, languageTarget);
 
     const audio = this.audioRepository.create({
       type: 'Audio',
