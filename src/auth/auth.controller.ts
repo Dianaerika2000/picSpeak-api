@@ -33,11 +33,7 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @Get('profile')
     async profile(@Request() req) {
-        const user = await this.authService.profile(req.user.email);
-        return {
-            ...req.user,
-            ...user
-        };
+        return req.user;
     }
 
     @Post('verify_email')
