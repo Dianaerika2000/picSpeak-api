@@ -32,8 +32,12 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('profile')
-    profile(@Request() req) {
-        return req.user;
+    async profile(@Request() req) {
+        const user = await this.authService.profile(req.user.email);
+        return {
+            ...req.user,
+            ...user
+        };
     }
 
     @Post('verify_email')
