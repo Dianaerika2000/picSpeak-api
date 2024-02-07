@@ -7,7 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { ResourcesService } from 'src/resources/resources.service';
 import { Chat } from './entities/chat.entity';
 import { ConfigurationService } from 'src/configuration/configuration.service';
-
+import * as tzOffset from 'tz-offset';
 @Injectable()
 export class MessageService {
   constructor(
@@ -23,9 +23,8 @@ export class MessageService {
   async createMessage(createMessageDto: CreateMessageDto, receiverId: number) {
     const { userId, chatId, resources } = createMessageDto;
     console.log('Receiver Id', receiverId)
-    const tzOffset = require('tz-offset');
-    const boliviaTimeZone = tzOffset('America/La_Paz');
-
+    
+    const boliviaTimeZone = tzOffset.offsetOf('America/La_Paz');
     // Obtener instancias del usuario y del chat
     const user = await this.individualUserService.findOne(userId);
     const chat = await this.chatRepository.findOneBy({ id: chatId });
@@ -40,8 +39,8 @@ export class MessageService {
       status: true,
       individualUser: user,
       chat: chat,
-      createdAt: new Date().toLocaleString('es-BO', {timeZone: boliviaTimeZone}),
-      updatedAt: new Date().toLocaleString('es-BO', {timeZone: boliviaTimeZone}),
+      createdAt: new Date().toLocaleString('es-BO', {timeZone: 'America/La_Paz'}),
+      updatedAt: new Date().toLocaleString('es-BO', {timeZone: 'America/La_Paz'}),
       text: await Promise.all(texts.map(text => this.resourceService.createText(text))),
       image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
       audio: await Promise.all(audios.map(audio => this.resourceService.createAudio(audio))),
