@@ -23,6 +23,8 @@ export class MessageService {
   async createMessage(createMessageDto: CreateMessageDto, receiverId: number) {
     const { userId, chatId, resources } = createMessageDto;
     console.log('Receiver Id', receiverId)
+    const tzOffset = require('tz-offset');
+    const boliviaTimeZone = tzOffset('America/La_Paz');
 
     // Obtener instancias del usuario y del chat
     const user = await this.individualUserService.findOne(userId);
@@ -38,8 +40,8 @@ export class MessageService {
       status: true,
       individualUser: user,
       chat: chat,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toLocaleString('es-BO', {timeZone: boliviaTimeZone}),
+      updatedAt: new Date().toLocaleString('es-BO', {timeZone: boliviaTimeZone}),
       text: await Promise.all(texts.map(text => this.resourceService.createText(text))),
       image: await Promise.all(images.map(image => this.resourceService.createImage(image))),
       audio: await Promise.all(audios.map(audio => this.resourceService.createAudio(audio))),

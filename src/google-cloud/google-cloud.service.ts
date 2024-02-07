@@ -63,7 +63,7 @@ export class GoogleCloudService {
     const request = {
       input: {text: text},
       // Select the language and SSML voice gender (optional)
-      voice: {languageCode: lenguageCode, ssmlGender: 'NEUTRAL'},
+      voice: {languageCode: lenguageCode, ssmlGender: 'FEMALE'},
       // select the type of audio encoding
       audioConfig: {audioEncoding: 'MP3'},
     };
