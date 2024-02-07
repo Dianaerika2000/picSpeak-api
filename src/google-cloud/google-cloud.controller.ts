@@ -19,5 +19,9 @@ export class GoogleCloudController {
     console.log(text, language);
     return this.googleCloudService.textToSpeech(text, 'en-US');
   }
-  
+
+  @Get('lenguage/code')
+  async getLenguageCode(@Body('language') language: string){
+    return this.googleCloudService.getLenguageCodeForTextToSpeech(language);
+  }  
 }
