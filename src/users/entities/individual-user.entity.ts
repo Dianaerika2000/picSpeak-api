@@ -46,8 +46,8 @@ export class IndividualUser extends User {
     active: boolean;
 
     //configuracion con el usuario
-    @ManyToOne(() => Nacionality, (nacionality) => nacionality.individualusers)
-    @JoinColumn({ name: 'nacionality_id' })
+    @ManyToOne(() => Nacionality, (nacionality) => nacionality.individualusers, {eager: true})
+    @JoinColumn({ name: 'nacionality_id'})
     nacionality: Nacionality;
 
     @OneToMany(() => InappropriateContentUser, (inappropriateContentUser) => inappropriateContentUser.individualuser)
