@@ -83,6 +83,7 @@ export class ChatService {
         `;
 
         const results = await this.chatRepository.query(query, [chatId]);
+        console.log('RESULTADOS MESAJE', results)
 
         return results;
     }
