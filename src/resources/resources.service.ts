@@ -39,8 +39,6 @@ export class ResourcesService {
 
       const key = `${Date.now().toString()}-${createResourceDto.pathDevice}`;
       const uploadImage = await this.awsService.uploadImageToS3(imageBuffer, key);
-      console.log('AWS RESOURCE', uploadImage)
-
       const labels = await this.awsService.getLabelFromRekognition(imageBuffer);
 
       return this.imageRepository.create({
@@ -70,7 +68,6 @@ export class ResourcesService {
     });
     // Limpia el texto eliminando comillas y espacios adicionales
     const cleanedTranslateText = translateText[0].text.replace(/["'\n]+/g, ' ').trim();
-    console.log('CLEANED TRANSLATED TEXT', cleanedTranslateText);
 
     const text = this.textRepository.create({
       textOrigin: CreateTextDto.textOrigin,

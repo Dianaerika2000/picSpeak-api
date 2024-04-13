@@ -22,10 +22,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userService: UsersService,
   ) { }
 
-  // handleConnection(client: Socket, ...args: any[]) {
-  //   console.log('Cliente conectado: ', client.id);
-  // }
-
   async handleConnection(client: Socket, ...args: any[]) {
     const userId = client.handshake.query.userId;
     const user = await this.userService.findOne(+userId);
@@ -61,10 +57,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`list of users:  ${JSON.stringify(this.userSocketsMap)}`);
   }
 
-  // handleDisconnect(client: Socket) {
-  //   console.log('Cliente desconectado: ', client.id);
-  // }
-
   handleDisconnect(client: Socket) {
     if (client.data.user) {
       delete this.userSocketsMap[client.data.user.userId];
@@ -72,25 +64,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // async pushOfflineMessages(socket: Socket) {
-  //   // Obtener usuario 
-  //   const user = socket.data.user;
-
-  //   if(!user) {
-  //     return; 
-  //   }
-
-  //   // Query mensajes offline
-  //   const offlineMessages = await this.chatService.findOfflineMessages(user.userId);
-
-  //   // Enviar cada mensaje
-  //   offlineMessages.forEach(message => {
-  //     socket.emit('newMessage', message);  
-  //   });
-  // }
-
   getReceivingUserSocket(userId: number) {
-
     // Encontrar el socketId mapeado
     const socketInfo = this.userSocketsMap[userId];
 
@@ -125,7 +99,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (existingChat) {
       //Traer las conversaciones
-      const messages = await this.chatService.getMessagesByChatId(existingChat.id);
+      const messages = await this.chatService.getAllChatsForUser(existingChat.id);
 
       //Enviar los mensajes
       client.emit('messagesLoaded', messages);

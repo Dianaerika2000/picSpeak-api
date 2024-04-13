@@ -46,9 +46,7 @@ export class AuthController {
     @Put('update-profile')
     async updateProfile(@Request() req, @Body() updateData: UpdateProfileDto) {
         const userId = req.user.id;
-        console.log('ID', userId)
         const updatedUser = await this.authService.updateUserProfile(userId, updateData);
-        console.log('UPDATE', updatedUser)
 
         return { message: 'Perfil actualizado con éxito', user: updatedUser };
     }

@@ -70,8 +70,6 @@ export class GoogleCloudService {
 
     // Make the API call to synthesize the provided text
     const [response] = await client.synthesizeSpeech(request);
-    console.log('response', response);
-
     const { audioUrl } = await this.awsService.uploadAudioToS3(response.audioContent, audioName);
 
     return {

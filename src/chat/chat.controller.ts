@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { OfflineMessageDto } from "./dto/offlineMessage.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 
-@ApiTags('CHAT')
+@ApiTags('Chat')
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}

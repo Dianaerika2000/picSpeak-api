@@ -27,7 +27,6 @@ export class UsersController {
 
   @Get('email/:email')
   findOneByEmail(@Param('email') email: string) {
-    console.log('EMAIL', email)
     return this.usersService.findOneByEmail(email);
   }
 

@@ -76,14 +76,13 @@ export class ChatService {
         const query = `
             SELECT * FROM public.message ms
             LEFT JOIN public.text tx on tx."messageId" = ms."id"
-	        LEFT JOIN public.image im on im."messageId" = ms."id"
+            LEFT JOIN public.image im on im."messageId" = ms."id"
             LEFT JOIN public.audio aud on aud."messageId" = ms."id"
             WHERE "chatId" = $1
             ORDER BY ms."created_at" ASC;
         `;
 
         const results = await this.chatRepository.query(query, [chatId]);
-        console.log('Messages',results)
 
         return results;
     }
@@ -99,8 +98,8 @@ export class ChatService {
 
     async sendMessage(createMessageDto: CreateMessageDto, receiverId: number, audioFile?: Buffer) {
         const languageOrigin = createMessageDto.resources[0]?.languageOrigin;
-        
-        if(audioFile) {
+
+        if (audioFile) {
             const { transcription, audioUrl } = await this.GoogleCloudService.getTranscription(audioFile, languageOrigin);
 
             createMessageDto.resources[0].textOrigin = transcription;
@@ -265,33 +264,33 @@ export class ChatService {
     }
 
     async saveOfflineMessage(offlineMessage: OfflineMessageDto) {
-      const newOfflineMessage = this.offlineMessageRepository.create(offlineMessage);
-      return await this.offlineMessageRepository.save(newOfflineMessage);
+        const newOfflineMessage = this.offlineMessageRepository.create(offlineMessage);
+        return await this.offlineMessageRepository.save(newOfflineMessage);
     }
 
     async getOfflineMessages(userId: number) {
-      const limit = 50; // máximo a obtener
+        const limit = 50; // máximo a obtener
 
-      const since = new Date();
-      since.setDate(since.getDate() - 7);
+        const since = new Date();
+        since.setDate(since.getDate() - 7);
 
-      const messages = await this.offlineMessageRepository.find({
-        where: {
-          receiverId: userId,
-          delivered: false,
-          createdAt: MoreThan(since) 
-        },
-        order: { createdAt: 'ASC' },
-        take: limit
-      });
+        const messages = await this.offlineMessageRepository.find({
+            where: {
+                receiverId: userId,
+                delivered: false,
+                createdAt: MoreThan(since)
+            },
+            order: { createdAt: 'ASC' },
+            take: limit
+        });
 
-      // Marcar como entregados
-      await this.offlineMessageRepository.update(
-        {id: In(messages.map(m => m.id)) }, 
-        {delivered: true}  
-      );
+        // Marcar como entregados
+        await this.offlineMessageRepository.update(
+            { id: In(messages.map(m => m.id)) },
+            { delivered: true }
+        );
 
-      return messages;
+        return messages;
     }
 }
 

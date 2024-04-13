@@ -38,8 +38,6 @@ export class UsersService {
       user.password = createUserDto.password;
       user.activationToken = createUserDto.activationToken;
       user.photo_url = createUserDto.photo_url != null ? createUserDto.photo_url : null;
-
-      console.log(user)
     } else if (createUserDto.type == 'group') {
       //TODO: Código para crear usuarios tipo grupo
     }
@@ -58,8 +56,6 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateProfileDto) {
     const user = await this.individualRepository.findOne({ where: { id } });
-
-    console.log('USER FIND', user);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
